@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 2 - Caching Layer  
-**Status:** 🟢 Phase 1 Complete, Moving Forward
+**Current Phase:** Phase 3 - API Adapters  
+**Status:** 🟢 Phase 2 Complete, Moving Forward
 
 ---
 
@@ -10,28 +10,40 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 2: Caching Layer**
+1. **Start Phase 3: API Adapters**
 
-   - Create `cache/index.ts` with BrowserCache class
-   - Implement localStorage wrapper with 24h TTL
-   - Add SSR-safe guards (typeof window checks)
-   - Implement graceful degradation for cache failures
-   - Add cache stats and clear methods
-
-2. **Next: Phase 3 - API Adapters**
-
-   - RxNorm adapter for drug normalization
-   - FDA adapter for NDC package retrieval
+   - RxNorm adapter for drug normalization (adapters/rxnorm.ts)
+   - FDA adapter for NDC package retrieval (adapters/fda.ts)
    - Integrate caching layer with adapters
+   - Retry logic and timeouts
+   - Error handling
 
-3. **Then: Phase 4 - SIG Parsing**
+2. **Next: Phase 4 - SIG Parsing**
+
    - Rules-based parser (client-side)
    - LLM parser (Cloud Functions)
    - Unified parser orchestration
 
+3. **Then: Phase 5 - Quantity Calculation**
+   - Quantity calculator engine
+   - Simple formula: amountPerDose × frequencyPerDay × daysSupply
+
 ---
 
 ## Recent Changes
+
+### Phase 2 Completed (Nov 10, 2025) ✅
+
+1. **cache/index.ts Created**
+
+   - BrowserCache class with localStorage wrapper
+   - 24h TTL with automatic expiration and cleanup
+   - SSR-safe guards (typeof window checks)
+   - Graceful degradation for cache failures
+   - Cache stats() and clear() methods
+   - No linter errors
+
+**Impact:** All API calls can now be cached client-side for 24h, reducing latency and API costs
 
 ### Phase 1 Completed (Nov 10, 2025) ✅
 
