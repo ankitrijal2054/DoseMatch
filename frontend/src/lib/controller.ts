@@ -70,15 +70,15 @@ export async function processRecommendation(
 
     // Step 4: Compute target quantity
     console.log("[Controller] Step 4: Computing target quantity...");
-    const targetQuantity = computeTotalUnits(normalizedSig);
+    const totalUnits = computeTotalUnits(normalizedSig);
     console.log(
-      `[Controller] Target quantity: ${targetQuantity.totalUnits} ${normalizedSig.unit}`
+      `[Controller] Target quantity: ${totalUnits} ${normalizedSig.unit}`
     );
 
     // Step 5: Recommend packs
     console.log("[Controller] Step 5: Recommending packs...");
     const recommendation = recommendPacks(
-      targetQuantity.totalUnits,
+      totalUnits,
       normalizedSig.unit,
       ndcs,
       { maxPacks: 3 }
@@ -104,7 +104,7 @@ export async function processRecommendation(
       rxnorm,
       targetQuantity: {
         unit: normalizedSig.unit,
-        totalUnits: targetQuantity.totalUnits,
+        totalUnits,
       },
       recommendation,
       warnings,

@@ -53,15 +53,16 @@
 	<div class="bg-white rounded-lg p-6 shadow-lg border border-fh-border mb-6">
 		<h2 class="text-xl font-semibold mb-4">Test Configuration</h2>
 
-		<div class="mb-4">
-			<label class="block text-sm font-medium text-fh-text900 mb-2">
-				Drug Name or NDC
-			</label>
-			<input
-				type="text"
-				bind:value={drugQuery}
-				placeholder="e.g., lisinopril 10mg"
-				class="w-full px-4 py-2 border border-fh-border rounded-lg focus:outline-none focus:ring-2 focus:ring-fh-blue"
+	<div class="mb-4">
+		<label for="drugInput" class="block text-sm font-medium text-fh-text900 mb-2">
+			Drug Name or NDC
+		</label>
+		<input
+			id="drugInput"
+			type="text"
+			bind:value={drugQuery}
+			placeholder="e.g., lisinopril 10mg"
+			class="w-full px-4 py-2 border border-fh-border rounded-lg focus:outline-none focus:ring-2 focus:ring-fh-blue"
 			/>
 		</div>
 
