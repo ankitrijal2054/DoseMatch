@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 7 - Warnings & Evaluation (Next)  
-**Status:** 🟢 Phase 6 Complete, Moving Forward
+**Current Phase:** Phase 7 - Warnings & Evaluation (Complete)  
+**Status:** 🟢 Phase 7 Complete, Ready for Phase 8
 
 ---
 
@@ -25,6 +25,32 @@
 ---
 
 ## Recent Changes
+
+### Phase 7 Completed (Nov 10, 2025) ✅
+
+1. **engines/warnings.ts - Warning Generation System**
+
+   - generateWarnings() function for risk detection
+   - Inactive NDC detection (critical warnings)
+   - High overfill detection (>20%)
+   - Underfill detection (partial fill warnings)
+   - No exact match detection (info warning)
+   - Severity levels: error, warning, info
+   - Clear, actionable warning messages
+
+2. **engines/warnings.test.ts - Comprehensive Unit Tests**
+
+   - 24 test cases covering all warning scenarios
+   - Inactive NDC warnings (recommended, present, active chosen)
+   - Exact match detection (all strategies)
+   - Overfill warnings (20%+ threshold)
+   - Underfill warnings (partial fill)
+   - Real-world pharmacy scenarios
+   - Edge cases and multiple warnings
+
+**Impact:** Complete warning system integrated with type safety, ready for Phase 8 controller integration
+
+---
 
 ### Phase 6 Completed (Nov 10, 2025) ✅
 
