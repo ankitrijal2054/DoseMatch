@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 6 - Pack Selection Engine (Next)  
-**Status:** 🟢 Phase 5 Complete, Moving Forward
+**Current Phase:** Phase 7 - Warnings & Evaluation (Next)  
+**Status:** 🟢 Phase 6 Complete, Moving Forward
 
 ---
 
@@ -10,20 +10,48 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 6: Pack Selection Engine**
-
-   - Pack selection algorithm
-   - Strategies: exact match, multi-pack, nearest
-   - Scoring and ranking
-
-2. **Next: Phase 7 - Warnings & Evaluation**
+1. **Start Phase 7: Warnings & Evaluation**
 
    - Warning system
    - Inactive NDC detection, overfill/underfill alerts
+   - High overfill detection, underfill detection
+
+2. **Next: Phase 8 - Main Controller**
+
+   - Orchestration layer
+   - Sequential API calls
+   - Performance metrics tracking
 
 ---
 
 ## Recent Changes
+
+### Phase 6 Completed (Nov 10, 2025) ✅
+
+1. **engines/pack.ts - Pack Selection Algorithm**
+
+   - scoreOption() function for ranking recommendations
+   - findExactMatch() strategy (1 pack = target quantity)
+   - findMultiPackCombination() strategy (2-3 packs with <15% overfill)
+   - findNearestMatch() strategy (single pack, may over/underfill)
+   - recommendPacks() orchestrator (try exact → multi-pack → nearest)
+   - 4 key optimizations reducing O(n²×m²) to O(400):
+     1. Limit to 20 active NDCs
+     2. Cap overfill at 15%
+     3. Smart count limits
+     4. Early termination for <2% matches
+
+2. **engines/pack.test.ts - Comprehensive Unit Tests**
+
+   - 60+ test cases covering all pack selection strategies
+   - Exact match, multi-pack combinations, nearest match
+   - Scoring and ranking validation
+   - Unit matching and badge generation
+   - Real-world pharmacy scenarios (Amoxicillin, Lisinopril, Albuterol, insulin)
+   - Edge cases (single NDC, very small/large quantities, fractional sizes)
+   - Performance characteristics (large NDC lists)
+
+**Impact:** Complete pack selection pipeline with optimized multi-pack search, ready for controller integration
 
 ### Phase 5 Completed (Nov 10, 2025) ✅
 
