@@ -35,30 +35,62 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
   const startTime = Date.now();
 
   try {
-    // Determine if input is NDC or drug name
-    const isNdc = /^\d{11}$/.test(input.replace(/-/g, ""));
+    // Determine if input is NDC or drug name (NDC can be 10 or 11 digits)
+    const cleanInput = input.replace(/-/g, "");
+    const isNdc = /^\d{10,11}$/.test(cleanInput);
 
     let rxcui: string;
 
     if (isNdc) {
       // NDC to RxCUI
+      // Format NDC to standard format: NNNNN-NNN-NN (5-3-2)
+      const cleanNdc = input.replace(/-/g, "");
+      let formattedNdc = cleanNdc;
+
+      if (cleanNdc.length === 10) {
+        // 10-digit: assume format is NNNNNNNNNNN, need to add dashes
+        formattedNdc = `${cleanNdc.substring(0, 5)}-${cleanNdc.substring(
+          5,
+          8
+        )}-${cleanNdc.substring(8, 10)}`;
+      } else if (cleanNdc.length === 11) {
+        // 11-digit: already has proper digit count
+        formattedNdc = `${cleanNdc.substring(0, 5)}-${cleanNdc.substring(
+          5,
+          8
+        )}-${cleanNdc.substring(8, 11)}`;
+      }
+
+      console.log(
+        `[RxNorm] Looking up NDC: ${input} (formatted: ${formattedNdc})`
+      );
       const ndcResponse = await retryRequest(() =>
         axios.get(`${config.rxnorm.baseUrl}/ndcstatus.json`, {
-          params: { ndc: input },
+          params: { ndc: formattedNdc },
           timeout: TIMEOUT,
         })
+      );
+      console.log(
+        `[RxNorm] ndcstatus response keys:`,
+        Object.keys(ndcResponse.data)
       );
       rxcui = ndcResponse.data.ndcStatus?.rxcui;
+      console.log(`[RxNorm] Found RxCUI from NDC: ${rxcui}`);
     } else {
-      // Drug name to RxCUI (approximate match)
+      // Drug name to RxCUI (approximate match) - get multiple candidates
       const searchResponse = await retryRequest(() =>
         axios.get(`${config.rxnorm.baseUrl}/approximateTerm.json`, {
-          params: { term: input, maxEntries: 1 },
+          params: { term: input, maxEntries: 10 },
           timeout: TIMEOUT,
         })
       );
+      console.log(`[RxNorm] approximateTerm response:`, searchResponse.data);
       const candidates = searchResponse.data.approximateGroup?.candidate;
-      rxcui = candidates?.[0]?.rxcui;
+      const allCandidateRxcuis = candidates?.map((c: any) => c.rxcui) || [];
+      console.log(
+        `[RxNorm] Found candidates: ${allCandidateRxcuis.join(", ")}`
+      );
+      rxcui = allCandidateRxcuis[0];
     }
 
     if (!rxcui) {
@@ -66,9 +98,8 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
     }
 
     // Get drug details (SCD/SBD)
-    const detailsResponse = await retryRequest(() =>
-      axios.get(`${config.rxnorm.baseUrl}/rxcui/${rxcui}/property.json`, {
-        params: { propName: "all" },
+    let detailsResponse = await retryRequest(() =>
+      axios.get(`${config.rxnorm.baseUrl}/rxcui/${rxcui}/properties.json`, {
         timeout: TIMEOUT,
       })
     );
@@ -106,5 +137,22 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
   } catch (error) {
     console.error("[RxNorm] Error:", error);
     throw new Error(`RxNorm lookup failed: ${error}`);
+  }
+}
+
+// Helper function to get multiple RxCUI candidates for fallback
+export async function getRxCuiCandidates(input: string): Promise<string[]> {
+  try {
+    const searchResponse = await axios.get(
+      `${config.rxnorm.baseUrl}/approximateTerm.json`,
+      {
+        params: { term: input, maxEntries: 10 },
+        timeout: 5000,
+      }
+    );
+    const candidates = searchResponse.data.approximateGroup?.candidate || [];
+    return candidates.map((c: any) => c.rxcui).filter(Boolean);
+  } catch {
+    return [];
   }
 }

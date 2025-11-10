@@ -58,7 +58,7 @@ export async function processRecommendation(
     // Step 3: Fetch NDCs
     console.log("[Controller] Step 3: Fetching NDC packages...");
     const fdaStart = Date.now();
-    const ndcs = await ndcsByRxCui(rxnorm.rxcui);
+    const ndcs = await ndcsByRxCui(rxnorm.rxcui, drugQuery);
     metrics.fdaMs = Date.now() - fdaStart;
     console.log(`[Controller] Found ${ndcs.length} NDCs in ${metrics.fdaMs}ms`);
 

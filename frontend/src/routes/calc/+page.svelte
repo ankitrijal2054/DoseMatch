@@ -14,27 +14,27 @@
 
 	const presets = [
 		{
-			name: 'Amoxicillin Tabs',
-			drugQuery: 'amoxicillin 500mg',
-			sigText: 'Take 1 capsule by mouth three times daily',
-			daysSupply: 10
-		},
-		{
-			name: 'Lisinopril',
-			drugQuery: 'lisinopril 10mg',
+			name: 'Atorvastatin',
+			drugQuery: 'atorvastatin 40mg',
 			sigText: 'Take 1 tablet by mouth once daily',
 			daysSupply: 30
 		},
 		{
-			name: 'Albuterol Inhaler',
-			drugQuery: 'albuterol 90mcg',
-			sigText: 'Inhale 2 puffs four times daily',
+			name: 'Metformin',
+			drugQuery: 'metformin 500mg',
+			sigText: 'Take 1 tablet by mouth twice daily',
 			daysSupply: 30
 		},
 		{
-			name: 'Insulin Glargine',
-			drugQuery: 'insulin glargine',
-			sigText: 'Inject 20 units subcutaneously once daily at bedtime',
+			name: 'Ibuprofen',
+			drugQuery: 'ibuprofen 200mg',
+			sigText: 'Take 1 tablet by mouth every 6 hours as needed',
+			daysSupply: 30
+		},
+		{
+			name: 'Omeprazole',
+			drugQuery: 'omeprazole 20mg',
+			sigText: 'Take 1 capsule by mouth once daily',
 			daysSupply: 30
 		}
 	];
