@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 7 - Warnings & Evaluation (Complete)  
-**Status:** 🟢 Phase 7 Complete, Ready for Phase 8
+**Current Phase:** Phase 8 - Main Controller (Complete)  
+**Status:** 🟢 Phase 8 Complete, Ready for Phase 9 (UI Implementation)
 
 ---
 
@@ -10,21 +10,45 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 7: Warnings & Evaluation**
+1. **Phase 8: Main Controller - COMPLETE ✅**
 
-   - Warning system
-   - Inactive NDC detection, overfill/underfill alerts
-   - High overfill detection, underfill detection
+   - processRecommendation() orchestration function
+   - Sequential API calls (SIG → RxNorm → FDA → Quantity → Pack → Warnings)
+   - Performance metrics tracking with totalMs, sigParsingMs, rxnormMs, fdaMs
+   - 8 comprehensive unit tests covering all scenarios
 
-2. **Next: Phase 8 - Main Controller**
+2. **Next: Phase 9 - UI Implementation**
 
-   - Orchestration layer
-   - Sequential API calls
-   - Performance metrics tracking
+   - Global layout with navbar, demo banner, footer
+   - Home page with hero section and features grid
+   - Calculator page with form, presets, results display
 
 ---
 
 ## Recent Changes
+
+### Phase 8 Completed (Nov 10, 2025) ✅
+
+1. **controller.ts - Main Orchestration Layer**
+
+   - processRecommendation() function coordinates all phases
+   - Sequential pipeline: SIG → RxNorm → FDA → Quantity → Pack → Warnings
+   - Proper error handling with structured error response
+   - Performance metrics tracking: totalMs, sigParsingMs, rxnormMs, fdaMs
+   - Comprehensive logging at each step
+   - Handles both drugQuery and ndc11 inputs
+
+2. **controller.test.ts - 8 Comprehensive Unit Tests**
+
+   - Complete recommendation flow with real-world data (Amoxicillin)
+   - NDC11 input handling instead of drug query
+   - Error handling: no drugQuery/ndc11, no NDCs returned
+   - Structured error propagation with code, message, details
+   - Performance metrics validation
+   - Real-world scenarios: Lisinopril (30-day supply), Albuterol MDI
+   - All tests passing, no linter errors
+
+**Impact:** Complete orchestration layer integrating all domain logic, ready for UI implementation
 
 ### Phase 7 Completed (Nov 10, 2025) ✅
 
