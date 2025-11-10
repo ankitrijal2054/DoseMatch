@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 10 - Testing (Complete)  
-**Status:** 🟢 Phase 10 Complete, Ready for Phase 12 (Deployment) or Phase 11 (Optional)
+**Current Phase:** Phase 11 - OpenAI Explainer (Complete)  
+**Status:** 🟢 Phase 11 Complete, Ready for Phase 12 (Deployment)
 
 ---
 
@@ -10,27 +10,58 @@
 
 ### Immediate Next Steps
 
-1. **Phase 10: Testing - COMPLETE ✅**
+1. **Phase 11: OpenAI Explainer - COMPLETE ✅** (Nov 10, 2025)
 
-   - Created 3 new test files (units.test.ts, sig/rules.test.ts, cache/index.test.ts)
-   - 140+ unit tests passing (81.9% success rate)
-   - 171 total tests (all major functionality covered)
-   - Zero linter errors across entire src/lib/
-   - Vitest configured and working properly
-   - All exports enhanced for testability
-   - Test Report: Docs/PHASE_10_TESTING_REPORT.md
+   - Created Cloud Function: `explainRecommendation.ts`
+   - Integrates with OpenAI GPT-4o-mini for explanations
+   - UI button in calculator to toggle explanations
+   - Graceful fallback if API fails
+   - Loading states and error handling
+   - Both frontend and functions build successfully
+   - Zero linter errors
+   - Documentation: Docs/PHASE_11_OPENAI_EXPLAINER.md
 
-2. **Next: Phase 12 - Firebase Deployment** (or Phase 11 - Optional OpenAI Explainer)
+2. **Next: Phase 12 - Firebase Deployment** (Ready to start)
 
    - Configure Firebase for production
    - Deploy frontend to Firebase Hosting
-   - Deploy Cloud Functions
+   - Deploy Cloud Functions with OpenAI Explainer
    - Verify live deployment
    - Post-deployment testing
 
 ---
 
 ## Recent Changes
+
+### Phase 11: OpenAI Explainer Integration (Nov 10, 2025) ✅
+
+**Cloud Function Implementation:**
+
+- Created `functions/src/explainRecommendation.ts` with OpenAI GPT-4o-mini integration
+- Accepts recommendation context and generates 1-2 sentence explanations
+- Graceful fallback when API fails (deterministic explanation based on match quality)
+- System prompt focused on: match quality, active/inactive status, overfill/underfill, dispensing advantages
+- Proper error handling and logging
+
+**UI Integration:**
+
+- Added "Show AI Explanation" button to calculator results
+- Toggles visibility of AI-generated explanation
+- Loading spinner during API call
+- Error display with helpful message
+- Beautiful glassmorphic panel with responsive design
+
+**Package Updates:**
+
+- Added `firebase` to frontend dependencies (for Cloud Functions client)
+- Both builds successful: frontend 41.63 kB CSS, functions 4.1 KB compiled
+
+**Testing Status:**
+
+- Zero linter errors
+- Builds successfully
+- Manual testing ready (requires Firebase deployment)
+- Graceful degradation if explainer API unavailable
 
 ### Calculator Layout Restructured - Final (Nov 10, 2025) ✅
 

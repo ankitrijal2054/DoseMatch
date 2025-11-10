@@ -2,6 +2,7 @@
 	import { processRecommendation } from '$lib/controller';
 	import type { NormalizedSig, RecommendationOption, ResultPayload, Warning } from '$lib/types';
 	import { onMount } from 'svelte';
+	import { getFunctions, httpsCallable } from 'firebase/functions';
 
 	let drugQuery = '';
 	let sigText = '';
@@ -11,6 +12,10 @@
 	let result: ResultPayload | null = null;
 	let parsedSig: NormalizedSig | null = null;
 	let showJson = false;
+	let showExplainer = false;
+	let explanation: string | null = null;
+	let explainerLoading = false;
+	let explainerError: string | null = null;
 
 	const presets = [
 		{
@@ -65,6 +70,51 @@
 		parsedSig = null;
 		error = null;
 		showJson = false;
+		showExplainer = false;
+		explanation = null;
+		explainerError = null;
+	}
+
+	async function handleExplainRecommendation() {
+		if (!result?.recommendation.recommended) {
+			explainerError = 'No recommendation to explain';
+			return;
+		}
+
+		explainerLoading = true;
+		explainerError = null;
+		explanation = null;
+
+		try {
+			const functions = getFunctions();
+			const explainFn = httpsCallable(functions, 'explainRecommendation');
+
+			const response = await explainFn({
+				drugQuery,
+				sigText,
+				daysSupply,
+				recommendation: {
+					ndc: result.recommendation.recommended.ndc,
+					packageSize: result.recommendation.recommended.packageSize,
+					unit: result.recommendation.recommended.unit,
+					matchType: result.recommendation.recommended.matchType,
+					status: result.recommendation.recommended.status,
+					overfillPercent: result.recommendation.recommended.overfillPercent,
+					packsUsed: result.recommendation.recommended.packsUsed
+				}
+			});
+
+			explanation = (response.data as string) || 'Unable to generate explanation';
+			showExplainer = true;
+		} catch (err) {
+			console.error('Explainer error:', err);
+			explainerError =
+				err && typeof err === 'object' && 'message' in err
+					? (err as { message?: string }).message ?? 'Failed to generate explanation'
+					: 'Failed to generate explanation. The AI explainer may not be available.';
+		} finally {
+			explainerLoading = false;
+		}
 	}
 
 	async function handleSubmit() {
@@ -77,6 +127,9 @@
 		error = null;
 		result = null;
 		parsedSig = null;
+		showExplainer = false;
+		explanation = null;
+		explainerError = null;
 
 		try {
 			const recommendation = await processRecommendation({
@@ -352,28 +405,69 @@ Take 1 tablet twice daily with meals"
 						</div>
 					{/if}
 
-					<div class="flex flex-wrap items-center gap-2">
-						<button
-							type="button"
-							on:click={() => recommendedOption && copyToClipboard(recommendedOption.ndc)}
-							class="px-3 sm:px-4 py-1 sm:py-2 bg-fh-blue text-white rounded-fhsm text-xs sm:text-sm font-semibold hover:bg-fh-purple transition"
-						>
-							Copy NDC
-						</button>
-						<button
-							type="button"
-							on:click={() => (showJson = !showJson)}
-							class="px-3 sm:px-4 py-1 sm:py-2 rounded-fhsm border border-fh-border text-xs sm:text-sm font-semibold text-fh-text600 hover:bg-fh-panel2 transition"
-						>
-							{showJson ? 'Hide JSON' : 'Show JSON'}
-						</button>
+				<div class="flex flex-wrap items-center gap-2">
+					<button
+						type="button"
+						on:click={() => recommendedOption && copyToClipboard(recommendedOption.ndc)}
+						class="px-3 sm:px-4 py-1 sm:py-2 bg-fh-blue text-white rounded-fhsm text-xs sm:text-sm font-semibold hover:bg-fh-purple transition"
+					>
+						Copy NDC
+					</button>
+					<button
+						type="button"
+						on:click={() => (showJson = !showJson)}
+						class="px-3 sm:px-4 py-1 sm:py-2 rounded-fhsm border border-fh-border text-xs sm:text-sm font-semibold text-fh-text600 hover:bg-fh-panel2 transition"
+					>
+						{showJson ? 'Hide JSON' : 'Show JSON'}
+					</button>
+					<button
+						type="button"
+						on:click={handleExplainRecommendation}
+						disabled={explainerLoading}
+						class="px-3 sm:px-4 py-1 sm:py-2 rounded-fhsm border border-fh-border text-xs sm:text-sm font-semibold text-fh-text600 hover:bg-fh-panel2 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+					>
+						{#if explainerLoading}
+							<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+							</svg>
+						{/if}
+						<span>{showExplainer ? 'Hide AI Explanation' : 'Show AI Explanation'}</span>
+					</button>
+				</div>
+
+				{#if showJson}
+					<pre class="max-h-64 overflow-y-auto overflow-x-auto rounded-fhmd border border-fh-border bg-fh-text900 text-gray-100 text-xs p-3">{JSON.stringify(result, null, 2)}</pre>
+				{/if}
+
+				{#if showExplainer}
+					<div class="space-y-3 rounded-fhmd border border-fh-border bg-gradient-to-br from-fh-purple-light/20 to-fh-blue-light/20 backdrop-blur-sm p-4 sm:p-6">
+						<div class="flex items-start gap-3">
+							<div class="text-2xl flex-shrink-0">🤖</div>
+							<div class="min-w-0 flex-1">
+								<h3 class="font-semibold text-fh-text900 text-sm sm:text-base mb-2">AI Explanation</h3>
+								{#if explainerLoading}
+									<div class="flex items-center gap-2 text-fh-text600 text-xs sm:text-sm">
+										<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+										</svg>
+										<span>Generating explanation…</span>
+									</div>
+								{:else if explainerError}
+									<div class="rounded-fhsm border border-yellow-200 bg-yellow-50 p-2 sm:p-3 text-xs sm:text-sm text-yellow-900">
+										<p class="font-semibold">⚠️ {explainerError}</p>
+										<p class="mt-1">Showing deterministic explanation instead (see "Why" above).</p>
+									</div>
+								{:else if explanation}
+									<p class="text-fh-text600 text-xs sm:text-sm leading-relaxed italic">{explanation}</p>
+								{/if}
+							</div>
+						</div>
 					</div>
+				{/if}
 
-					{#if showJson}
-						<pre class="max-h-64 overflow-y-auto overflow-x-auto rounded-fhmd border border-fh-border bg-fh-text900 text-gray-100 text-xs p-3">{JSON.stringify(result, null, 2)}</pre>
-					{/if}
-
-					{#if result.performanceMetrics}
+				{#if result.performanceMetrics}
 						<div class="space-y-2 text-xs text-fh-text600">
 							<h3 class="text-xs sm:text-sm font-semibold text-fh-text900 uppercase tracking-wide">Performance</h3>
 							<div class="grid grid-cols-2 gap-2 text-xs">
