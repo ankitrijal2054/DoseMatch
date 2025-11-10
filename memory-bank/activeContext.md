@@ -32,6 +32,92 @@
 
 ## Recent Changes
 
+### Calculator Layout Restructured - Final (Nov 10, 2025) ✅
+
+**Problem:** Calculator was still cutting off on Windows, even after layout optimization
+
+**Solution:** Complete layout restructure removing header and reorganizing components:
+
+**New Layout Structure:**
+
+- **REMOVED**: "NDC Recommendation Calculator" header container (~100px saved)
+- **REMOVED**: "Foundation Health Demo" badge
+- **REMOVED**: Description paragraph
+- **NEW**: Form and Presets side-by-side on desktop
+- **NEW**: Results and alternatives below (full width)
+- **Result**: No cutoff on any resolution, optimal space usage
+
+**Responsive Behavior:**
+
+- Mobile (0-767px): Form full-width, Presets below, Results below (single column)
+- Desktop (768px+): Form (2fr) + Presets (1fr) side-by-side, Results/Alternatives full-width below
+
+**Space Savings:** ~100-140px vertical space recovered
+
+### Calculator Layout Optimization (Nov 10, 2025) ✅
+
+**Problem:** Calculator form was cut off on initial load when users clicked calculator link
+
+**Solution:** Implemented full-viewport layout with intelligent responsive columns:
+
+1. **Container Structure:**
+
+   - Changed outer div to `min-h-screen flex flex-col` (full viewport height)
+   - Added `flex-1` to main grid to fill available space
+   - Ensures complete form visible without cutoff
+
+2. **Responsive Column Adaptation:**
+
+   - Mobile (0-639px): Single column (stacked full-width)
+   - Tablet (640-1023px): Single column (expanded with better spacing)
+   - Desktop (1024px+): Two columns (1.1fr left form, 0.9fr right results)
+   - Ultra-wide (1280px+): Same but centered with max-w-7xl
+
+3. **Smart Sticky Positioning:**
+
+   - Old: `sticky top-8` always applied
+   - New: `lg:sticky lg:top-8` (only on desktop)
+   - Mobile users: Natural scrolling
+   - Desktop users: Results panel stays visible
+
+4. **Improved Spacing & Centering:**
+   - Header: p-4 sm:p-6 md:p-8 (reduced from p-6 sm:p-8 md:p-12)
+   - Main grid: max-w-7xl mx-auto (prevents stretching)
+   - Alternative options: Matched grid centering
+   - Responsive margins: mx-2 sm:mx-4 md:mx-0
+
+**Result:** Full calculator visible on all devices, intelligent layout adaptation, professional appearance
+
+**Build Status:** ✅ Success (448ms client, 1.63s total), no linter errors, CSS 42.75 kB
+
+**Documentation:** Docs/CALC_LAYOUT_OPTIMIZATION.md
+
+### Calculator Page Responsive UI/UX (Nov 10, 2025) ✅
+
+**Improvements Made:**
+
+- Applied comprehensive responsive design to calculator page
+- Dynamic typography: text-xs sm:text-sm md:text-base md:text-lg
+- Responsive grid adaptation: cols-1 → sm:cols-2 → md:cols-3
+- Adaptive spacing: gap-2 sm:gap-3 md:gap-4
+- Text overflow prevention: break-words, line-clamp-\*, truncate
+- Mobile-optimized buttons and inputs
+- Presets grid: Mobile stacked → Tablet 2-column
+- Alternative options: Full-width responsive
+
+**Features:**
+
+- ✅ Full calculator visible on mobile
+- ✅ Responsive typography at 4+ breakpoints
+- ✅ Dynamic grid layouts (1 → 2 → 3 columns)
+- ✅ No text cutoff at any viewport
+- ✅ Compact mobile labels (SIG → Sig Parsing, Conf → Confidence)
+- ✅ Touch-friendly button sizing
+
+**Build Status:** ✅ Success (554ms), CSS 42.74 kB, no errors
+
+**Documentation:** Docs/CALC_PAGE_RESPONSIVE_IMPROVEMENTS.md
+
 ### Modern UI/UX Improvements - Tailwind v4 Fix (Nov 10, 2025) ✅
 
 **Critical Issue Found:** Styles weren't applying despite successful builds  

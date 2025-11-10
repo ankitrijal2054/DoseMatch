@@ -80,28 +80,28 @@
 	];
 </script>
 
-<div class="space-y-16 pb-16">
-	<section class="fh-hero rounded-fhlg p-12 md:p-20 text-white text-center shadow-fh-xl relative overflow-hidden animate-fade-in">
+<div class="space-y-12 sm:space-y-16 pb-12 sm:pb-16">
+	<section class="fh-hero rounded-fhlg p-6 sm:p-12 md:p-16 lg:p-20 text-white text-center shadow-fh-xl relative overflow-hidden animate-fade-in">
 		<div class="absolute inset-0 bg-black/10 rounded-fhlg"></div>
-		<div class="relative z-10 space-y-6">
-			<h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">
+		<div class="relative z-10 space-y-4 sm:space-y-6">
+			<h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-4 leading-tight break-words">
 				DoseMatch
 			</h1>
-			<p class="text-xl md:text-2xl mb-6 opacity-95 font-light">From SIG to shelf—perfect fills, every time.</p>
-			<p class="max-w-2xl mx-auto text-base md:text-lg opacity-90 mb-10 font-light leading-relaxed">
+			<p class="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6 opacity-95 font-light break-words">From SIG to shelf—perfect fills, every time.</p>
+			<p class="max-w-4xl mx-auto text-sm sm:text-base md:text-lg opacity-90 mb-6 sm:mb-10 font-light leading-relaxed px-2">
 				AI-accelerated prescription matching that finds the right NDC package on the first try, preventing claim
 				rejections and speeding up fulfillment for busy pharmacy teams.
 			</p>
-			<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-2">
 				<a
 					href="/calc"
-					class="inline-flex items-center justify-center px-8 py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover"
+					class="inline-flex items-center justify-center px-6 sm:px-8 py-2 sm:py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover text-sm sm:text-base whitespace-nowrap"
 				>
 					Open the Calculator
 				</a>
 				<a
 					href="#features"
-					class="inline-flex items-center justify-center px-8 py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover"
+					class="inline-flex items-center justify-center px-6 sm:px-8 py-2 sm:py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover text-sm sm:text-base whitespace-nowrap"
 				>
 					See the Platform
 				</a>
@@ -109,88 +109,88 @@
 		</div>
 	</section>
 
-	<section id="features" class="space-y-12 animate-fade-up">
-		<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-			<div>
-				<h2 class="text-4xl md:text-5xl font-bold text-fh-text900 leading-tight">Smarter workflows for pharmacy teams</h2>
-				<p class="text-fh-text600 mt-4 max-w-2xl text-lg leading-relaxed">
-					DoseMatch blends deterministic rules with explainable AI to deliver recommendations you can trust—and
+	<section id="features" class="space-y-8 sm:space-y-12 animate-fade-up px-2">
+		<div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+			<div class="flex-1 min-w-0">
+				<h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-fh-text900 leading-tight break-words">Smarter workflows for pharmacy teams</h2>
+				<p class="text-fh-text600 mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base md:text-lg leading-relaxed">
+					DoseMatch blends deterministic rules with explainable AI to deliver recommendations you can trust and
 					explain to patients, payers, and auditors alike.
 				</p>
 			</div>
-			<a href="/calc" class="px-6 py-3 bg-gradient-to-r from-fh-blue to-fh-purple text-white rounded-fhmd font-semibold shadow-fh hover:shadow-fh-lg btn-hover whitespace-nowrap">
+			<a href="/calc" class="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-fh-blue to-fh-purple text-white rounded-fhmd font-semibold shadow-fh hover:shadow-fh-lg btn-hover whitespace-nowrap text-sm sm:text-base flex-shrink-0">
 				Calculate an NDC
 			</a>
 		</div>
 
-		<div class="grid gap-6 md:grid-cols-3">
+		<div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
 			{#each features as feature, i}
-				<div class="bg-white/60 backdrop-blur-sm rounded-fhlg border border-fh-border/30 shadow-fh p-8 space-y-4 card-hover group" style="animation-delay: {i * 100}ms">
-					<div class="w-14 h-14 rounded-fhmd bg-gradient-to-br from-fh-blue/20 to-fh-purple/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
+				<div class="bg-white/60 backdrop-blur-sm rounded-fhlg border border-fh-border/30 shadow-fh p-6 sm:p-8 space-y-4 card-hover group" style="animation-delay: {i * 100}ms">
+					<div class="w-12 sm:w-14 h-12 sm:h-14 rounded-fhmd bg-gradient-to-br from-fh-blue/20 to-fh-purple/20 flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
 						{feature.icon}
 					</div>
-					<h3 class="text-xl font-bold text-fh-text900">{feature.title}</h3>
-					<p class="text-fh-text600 leading-relaxed">{feature.description}</p>
+					<h3 class="text-lg sm:text-xl font-bold text-fh-text900 break-words">{feature.title}</h3>
+					<p class="text-sm sm:text-base text-fh-text600 leading-relaxed">{feature.description}</p>
 				</div>
 			{/each}
 		</div>
 	</section>
 
-	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-10 md:p-12 space-y-8 animate-fade-up">
-		<h2 class="text-4xl md:text-5xl font-bold text-fh-text900">How DoseMatch works</h2>
-		<div class="grid gap-6 md:grid-cols-3">
+	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-6 sm:p-10 md:p-12 space-y-6 sm:space-y-8 animate-fade-up px-2">
+		<h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-fh-text900 break-words">How DoseMatch works</h2>
+		<div class="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
 			{#each workflow as step, index}
-				<div class="rounded-fhlg border border-fh-border/30 bg-gradient-to-br from-fh-blue-light/30 to-fh-purple-light/30 backdrop-blur-sm p-8 space-y-4 relative group hover:shadow-fh-lg transition-all duration-300">
-					<div class="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-fh-blue to-fh-purple text-white font-bold flex items-center justify-center shadow-fh group-hover:scale-110 transition-transform duration-300">
+				<div class="rounded-fhlg border border-fh-border/30 bg-gradient-to-br from-fh-blue-light/30 to-fh-purple-light/30 backdrop-blur-sm p-6 sm:p-8 space-y-4 relative group hover:shadow-fh-lg transition-all duration-300">
+					<div class="absolute -top-4 -left-4 w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-gradient-to-br from-fh-blue to-fh-purple text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-fh group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
 						{index + 1}
 					</div>
-					<h3 class="text-lg font-bold text-fh-text900 mt-2">{step.title}</h3>
-					<p class="text-fh-text600 leading-relaxed">{step.description}</p>
+					<h3 class="text-base sm:text-lg font-bold text-fh-text900 mt-2 sm:mt-4 break-words pr-2">{step.title}</h3>
+					<p class="text-sm sm:text-base text-fh-text600 leading-relaxed">{step.description}</p>
 				</div>
 			{/each}
 		</div>
 	</section>
 
-	<section class="space-y-8 animate-fade-up">
-		<h2 class="text-4xl md:text-5xl font-bold text-fh-text900">Problems solved</h2>
-		<div class="grid gap-5 md:grid-cols-2">
+	<section class="space-y-6 sm:space-y-8 animate-fade-up px-2">
+		<h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-fh-text900 break-words">Problems solved</h2>
+		<div class="grid gap-3 sm:gap-5 grid-cols-1 md:grid-cols-2">
 			{#each problems as problem}
-				<div class={`rounded-fhlg border-2 backdrop-blur-sm p-6 flex gap-4 items-start group hover:shadow-fh-lg transition-all duration-300 ${problem.accent} bg-opacity-50`}>
-					<div class="text-3xl leading-none group-hover:scale-110 transition-transform duration-300">{problem.icon}</div>
-					<div class="flex-1">
-						<h3 class="text-lg font-bold mb-2 text-fh-text900">{problem.title}</h3>
-						<p class="text-sm leading-relaxed opacity-90">{problem.description}</p>
+				<div class={`rounded-fhlg border-2 backdrop-blur-sm p-4 sm:p-6 flex gap-3 sm:gap-4 items-start group hover:shadow-fh-lg transition-all duration-300 ${problem.accent} bg-opacity-50`}>
+					<div class="text-2xl sm:text-3xl leading-none group-hover:scale-110 transition-transform duration-300 flex-shrink-0">{problem.icon}</div>
+					<div class="flex-1 min-w-0">
+						<h3 class="text-base sm:text-lg font-bold mb-1 sm:mb-2 text-fh-text900 break-words">{problem.title}</h3>
+						<p class="text-xs sm:text-sm leading-relaxed opacity-90">{problem.description}</p>
 					</div>
 				</div>
 			{/each}
 		</div>
 	</section>
 
-	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-10 md:p-12 animate-fade-up">
-		<div class="grid gap-8 md:grid-cols-3 text-center">
+	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-6 sm:p-10 md:p-12 animate-fade-up px-2">
+		<div class="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-center">
 			{#each stats as stat, i}
-				<div class="group" style="animation-delay: {i * 100}ms">
-					<div class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-fh-blue to-fh-purple bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+				<div class="group py-2 sm:py-0" style="animation-delay: {i * 100}ms">
+					<div class="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-fh-blue to-fh-purple bg-clip-text text-transparent mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300 break-words">
 						{stat.value}
 					</div>
-					<div class="text-fh-text600 text-sm uppercase tracking-widest font-semibold">{stat.label}</div>
+					<div class="text-fh-text600 text-xs sm:text-sm uppercase tracking-widest font-semibold break-words px-1">{stat.label}</div>
 				</div>
 			{/each}
 		</div>
 	</section>
 
-	<section class="fh-hero rounded-fhlg p-12 md:p-20 text-center text-white shadow-fh-xl relative overflow-hidden animate-fade-up">
+	<section class="fh-hero rounded-fhlg p-6 sm:p-12 md:p-20 text-center text-white shadow-fh-xl relative overflow-hidden animate-fade-up">
 		<div class="absolute inset-0 bg-black/5 rounded-fhlg"></div>
-		<div class="relative z-10 space-y-6">
-			<h2 class="text-4xl md:text-6xl font-bold leading-tight">Ready to reduce prescription errors by 50%?</h2>
-			<p class="text-lg opacity-95 mb-8 max-w-2xl mx-auto font-light">
+		<div class="relative z-10 space-y-4 sm:space-y-6">
+			<h2 class="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight break-words px-2">Ready to reduce prescription errors by 50%?</h2>
+			<p class="text-sm sm:text-base md:text-lg opacity-95 mb-4 sm:mb-8 max-w-4xl mx-auto font-light px-2 leading-relaxed">
 				Run a real prescription through the calculator to see the SIG breakdown, pack recommendation, and guardrail
 				warnings in seconds.
 			</p>
-			<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-2">
 				<a
 					href="/calc"
-					class="inline-flex items-center justify-center px-8 py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover"
+					class="inline-flex items-center justify-center px-6 sm:px-8 py-2 sm:py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover text-sm sm:text-base whitespace-nowrap"
 				>
 					Try the Calculator
 				</a>
@@ -198,7 +198,7 @@
 					href="https://rxnav.nlm.nih.gov/"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="inline-flex items-center justify-center px-8 py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover"
+					class="inline-flex items-center justify-center px-6 sm:px-8 py-2 sm:py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover text-sm sm:text-base whitespace-nowrap"
 				>
 					Explore the Data Sources
 				</a>

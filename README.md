@@ -107,4 +107,4 @@ MIT
 
 ---
 
-Built for Foundation Health • Portfolio Project
+• Portfolio Project

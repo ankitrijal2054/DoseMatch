@@ -44,13 +44,7 @@
 		</div>
 	</nav>
 
-	<div class="bg-gradient-to-r from-fh-blue/5 via-fh-purple/5 to-fh-magenta/5 border-b border-fh-border/30 backdrop-blur-sm">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-center text-sm text-fh-text600 animate-fade-in">
-			<span class="font-semibold text-fh-text900">Demo Mode:</span> Portfolio build for Foundation Health. No patient data is collected or stored.
-		</div>
-	</div>
-
-	<main class="flex-1 w-full py-8 md:py-12 lg:py-16">
+	<main class="flex-1 w-full py-2 sm:py-3 md:py-3 lg:py-4">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-up">
 			{@render children()}
 		</div>
@@ -59,7 +53,7 @@
 	<footer class="mt-auto bg-white/40 backdrop-blur-md border-t border-fh-border/30 py-8 md:py-12">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-fh-text600">
 			<div class="space-y-3">
-				<p class="font-medium text-fh-text900">© {currentYear} DoseMatch • Built for Foundation Health</p>
+				<p class="font-medium text-fh-text900">© {currentYear} DoseMatch </p>
 				<p>
 					<a href="https://github.com/yourusername/dosematch" class="text-fh-blue hover:text-fh-purple font-semibold hover:underline transition-colors">View on GitHub</a>
 				</p>
