@@ -1,15 +1,20 @@
 export const config = {
   rxnorm: {
-    baseUrl: import.meta.env.PUBLIC_RXNORM_BASE_URL || 'https://rxnav.nlm.nih.gov/REST'
+    baseUrl:
+      import.meta.env.PUBLIC_RXNORM_BASE_URL ||
+      "https://rxnav.nlm.nih.gov/REST",
   },
   fda: {
-    baseUrl: import.meta.env.PUBLIC_FDA_NDC_BASE_URL || 'https://api.fda.gov/drug/ndc.json'
+    baseUrl:
+      import.meta.env.PUBLIC_FDA_NDC_BASE_URL ||
+      "https://api.fda.gov/drug/ndc.json",
   },
   app: {
-    mode: import.meta.env.PUBLIC_APP_MODE || 'demo'
+    mode: import.meta.env.PUBLIC_APP_MODE || "demo",
   },
   functions: {
-    baseUrl: import.meta.env.PUBLIC_FUNCTIONS_URL || 'http://127.0.0.1:5001/PROJECT_ID/us-central1'
-  }
+    baseUrl:
+      import.meta.env.PUBLIC_FUNCTIONS_URL ||
+      "http://127.0.0.1:5001/dosematch-dev/us-central1",
+  },
 };
-

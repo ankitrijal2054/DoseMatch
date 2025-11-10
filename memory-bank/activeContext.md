@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Pre-Development (Phase 0 ready to start)  
-**Status:** 🟢 Ready to Build
+**Current Phase:** Phase 2 - Caching Layer  
+**Status:** 🟢 Phase 1 Complete, Moving Forward
 
 ---
 
@@ -10,28 +10,49 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 0: Project Foundation**
+1. **Start Phase 2: Caching Layer**
 
-   - Initialize SvelteKit project with TypeScript
-   - Set up Firebase project (Hosting + Functions)
-   - Configure Tailwind CSS with Foundation Health theme
-   - Create project folder structure
+   - Create `cache/index.ts` with BrowserCache class
+   - Implement localStorage wrapper with 24h TTL
+   - Add SSR-safe guards (typeof window checks)
+   - Implement graceful degradation for cache failures
+   - Add cache stats and clear methods
 
-2. **Environment Setup**
+2. **Next: Phase 3 - API Adapters**
 
-   - Install Firebase CLI globally
-   - Create Firebase project in console
-   - Initialize Functions (Node.js 18, TypeScript)
-   - Set OpenAI API key in Firebase Secrets
+   - RxNorm adapter for drug normalization
+   - FDA adapter for NDC package retrieval
+   - Integrate caching layer with adapters
 
-3. **Foundation Health Branding**
-   - Implement custom Tailwind theme (magenta-purple-blue gradient)
-   - Create CSS variables for colors and spacing
-   - Set up Google Fonts (Inter)
+3. **Then: Phase 4 - SIG Parsing**
+   - Rules-based parser (client-side)
+   - LLM parser (Cloud Functions)
+   - Unified parser orchestration
 
 ---
 
-## Recent Changes (Document Finalization)
+## Recent Changes
+
+### Phase 1 Completed (Nov 10, 2025) ✅
+
+1. **types.ts Created**
+
+   - All core TypeScript interfaces defined
+   - 5 canonical units established (EA, mL, g, U, actuations)
+   - Complete type safety for domain logic
+   - No linter errors
+
+2. **units.ts Created**
+   - 40+ unit aliases mapped to canonical forms
+   - Unit normalization functions implemented
+   - mg→g conversion logic added
+   - Unit comparison utilities ready
+
+**Impact:** Foundation for type-safe development across all subsequent phases
+
+---
+
+## Recent Changes (Architecture Decisions)
 
 ### Architecture Decisions Made (Nov 10, 2025)
 

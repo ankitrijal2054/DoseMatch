@@ -1,8 +1,8 @@
 # DoseMatch - Progress Tracker
 
 **Project Start:** November 10, 2025  
-**Current Phase:** Phase 0 (Not Started)  
-**Overall Progress:** 0% (Planning Complete, Implementation Pending)
+**Current Phase:** Phase 2 (Caching Layer)  
+**Overall Progress:** 13% (Phase 0 + Phase 1 Complete)
 
 ---
 
@@ -23,11 +23,42 @@
 
 **Status:** 🟢 **Project is fully planned and ready to build**
 
+### Phase 0: Project Foundation (COMPLETE)
+
+- ✅ 0.1 Repository Setup
+  - ✅ SvelteKit initialized with TypeScript
+  - ✅ Dependencies installed (Tailwind, axios, date-fns)
+  - ✅ Folder structure created (adapters/, cache/, engines/, sig/)
+- ✅ 0.2 Firebase Functions Setup
+  - ✅ Firebase project initialized
+  - ✅ Functions set up (Node.js 18, TypeScript)
+- ✅ 0.3 Environment Configuration
+  - ✅ config.ts created with environment variables
+  - ✅ .gitignore configured
+
+**Status:** 🟢 **Foundation ready for development**
+
+### Phase 1: Domain Types & Unit System (COMPLETE)
+
+- ✅ 1.1 Core Type Definitions (types.ts)
+  - ✅ CanonicalUnit type (EA, mL, g, U, actuations)
+  - ✅ DrugInput, NormalizedSig, RxNormResult interfaces
+  - ✅ NdcRecord, PackComposition, MatchType types
+  - ✅ RecommendationOption, Recommendation interfaces
+  - ✅ Warning, ResultPayload interfaces
+- ✅ 1.2 Unit Normalization System (units.ts)
+  - ✅ UNIT_ALIASES mapping (40+ unit variants)
+  - ✅ normalizeUnit() function (converts to canonical)
+  - ✅ toCanonical() converter (handles mg→g conversion)
+  - ✅ unitsMatch() comparison function
+
+**Status:** 🟢 **Type system complete, no linter errors**
+
 ---
 
 ## 🚧 What's In Progress (Current Work)
 
-**None.** Ready to start Phase 0.
+**Phase 2: Caching Layer - Ready to start**
 
 ---
 
@@ -56,19 +87,19 @@
 
 ---
 
-### Phase 1: Domain Types & Unit System (NOT STARTED)
+### Phase 1: Domain Types & Unit System (✅ COMPLETE)
 
-- [ ] 1.1 Core Type Definitions (types.ts)
-  - [ ] DrugInput, NormalizedSig, RxNormResult
-  - [ ] NdcRecord, RecommendationOption
-  - [ ] ResultPayload, Warning types
-- [ ] 1.2 Unit Normalization System (units.ts)
-  - [ ] Canonical units (EA, mL, g, U, actuations)
-  - [ ] Unit aliases mapping
-  - [ ] normalizeUnit() function
-  - [ ] toCanonical() converter
+- [x] 1.1 Core Type Definitions (types.ts)
+  - [x] DrugInput, NormalizedSig, RxNormResult
+  - [x] NdcRecord, RecommendationOption
+  - [x] ResultPayload, Warning types
+- [x] 1.2 Unit Normalization System (units.ts)
+  - [x] Canonical units (EA, mL, g, U, actuations)
+  - [x] Unit aliases mapping
+  - [x] normalizeUnit() function
+  - [x] toCanonical() converter
 
-**Estimate:** 2-3 hours
+**Status:** ✅ Complete - No linter errors
 
 ---
 
@@ -307,8 +338,8 @@
 | Phase | Name                     | Status         | Progress |
 | ----- | ------------------------ | -------------- | -------- |
 | -1    | Planning & Documentation | ✅ Complete    | 100%     |
-| 0     | Project Foundation       | ⏳ Not Started | 0%       |
-| 1     | Domain Types & Units     | ⏳ Not Started | 0%       |
+| 0     | Project Foundation       | ✅ Complete    | 100%     |
+| 1     | Domain Types & Units     | ✅ Complete    | 100%     |
 | 2     | Caching Layer            | ⏳ Not Started | 0%       |
 | 3     | API Adapters             | ⏳ Not Started | 0%       |
 | 4     | SIG Parsing              | ⏳ Not Started | 0%       |
@@ -323,7 +354,7 @@
 | 13    | Documentation & Polish   | ⏳ Not Started | 0%       |
 | 14    | Final Testing & Launch   | ⏳ Not Started | 0%       |
 
-**Overall Progress:** 1/15 phases complete (6.7%)
+**Overall Progress:** 3/15 phases complete (20%)
 
 ---
 
