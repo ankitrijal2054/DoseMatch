@@ -71,8 +71,12 @@ export function toCanonical(
 }
 
 export function unitsMatch(
-  unit1: CanonicalUnit,
-  unit2: CanonicalUnit
+  unit1: string | CanonicalUnit,
+  unit2: string | CanonicalUnit
 ): boolean {
-  return unit1 === unit2;
+  const normalized1 = normalizeUnit(String(unit1));
+  const normalized2 = normalizeUnit(String(unit2));
+  return normalized1 === normalized2;
 }
+
+export { UNIT_ALIASES };

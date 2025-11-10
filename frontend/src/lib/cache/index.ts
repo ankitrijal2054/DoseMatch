@@ -1,10 +1,10 @@
-interface CacheEntry<T> {
+export interface CacheEntry<T> {
   data: T;
   timestamp: number;
   ttl: number; // milliseconds
 }
 
-class BrowserCache {
+export class BrowserCache {
   private readonly DEFAULT_TTL = 24 * 60 * 60 * 1000; // 24 hours
   private readonly CACHE_PREFIX = "dosematch_cache_";
 
@@ -63,9 +63,9 @@ class BrowserCache {
     }
   }
 
-  stats(): { size: number; keys: string[] } {
+  stats(): { size: number; keys: string[]; entries: number } {
     if (typeof window === "undefined") {
-      return { size: 0, keys: [] };
+      return { size: 0, keys: [], entries: 0 };
     }
 
     const keys = Object.keys(localStorage)
@@ -75,6 +75,7 @@ class BrowserCache {
     return {
       size: keys.length,
       keys,
+      entries: keys.length,
     };
   }
 }
