@@ -1,238 +1,208 @@
-<div class="w-full">
-	<!-- Hero Section -->
-	<section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 py-20 sm:py-32">
-		<div class="absolute inset-0 overflow-hidden">
-			<div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
-			<div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full -ml-48 -mb-48"></div>
-		</div>
+<script lang="ts">
+	const features = [
+		{
+			title: 'Smart SIG Parsing',
+			description:
+				'Rules-first parsing with AI fallback delivers confident interpretations of complex dosage instructions.',
+			icon: '🎯'
+		},
+		{
+			title: 'Multi-Pack Optimization',
+			description:
+				'Optimizes up to three packs at once to minimize waste while guaranteeing complete fills.',
+			icon: '📦'
+		},
+		{
+			title: 'Active NDC Verification',
+			description:
+				'Real-time checks against FDA data keep discontinued products out of your workflow.',
+			icon: '✅'
+		}
+	];
 
-		<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-				<!-- Text Content -->
-				<div class="text-white space-y-6">
-					<h1 class="text-5xl sm:text-6xl font-bold leading-tight">From SIG to shelf—perfect fills, every time.</h1>
-					<p class="text-xl text-indigo-100 leading-relaxed max-w-lg">
-						DoseMatch is an AI-accelerated NDC packaging and quantity calculator designed to enhance prescription fulfillment accuracy in pharmacy systems.
-					</p>
+	const workflow = [
+		{
+			title: 'Normalize the prescription',
+			description:
+				'RxNorm + SIG parsing extract the structured intent: dose, frequency, and total therapy duration.'
+		},
+		{
+			title: 'Fetch and score NDCs',
+			description:
+				'FDA NDC Directory results are filtered, cached, and scored by match type, status, and pack efficiency.'
+		},
+		{
+			title: 'Recommend with guardrails',
+			description:
+				'Warnings highlight inactive products, overfill, or partial fills so pharmacists can act instantly.'
+		}
+	];
 
-					<!-- Stats -->
-					<div class="grid grid-cols-3 gap-4 pt-4">
-						<div class="bg-white/10 backdrop-blur rounded-lg p-4">
-							<div class="text-2xl font-bold">95%+</div>
-							<div class="text-sm text-indigo-100">Accuracy Goal</div>
-						</div>
-						<div class="bg-white/10 backdrop-blur rounded-lg p-4">
-							<div class="text-2xl font-bold">2s</div>
-							<div class="text-sm text-indigo-100">Max Response</div>
-						</div>
-						<div class="bg-white/10 backdrop-blur rounded-lg p-4">
-							<div class="text-2xl font-bold">50%</div>
-							<div class="text-sm text-indigo-100">Error Reduction</div>
-						</div>
-					</div>
+	const problems = [
+		{
+			title: 'Dosage Form Mismatches',
+			description: "RxNorm normalization ensures prescriptions for 'tablets' never return 'capsules'.",
+			accent: 'bg-red-50 border-red-200 text-red-900',
+			icon: '❌'
+		},
+		{
+			title: 'Package Size Confusion',
+			description:
+				'Multi-pack optimizer surfaces precise combinations when single packs fall short.',
+			accent: 'bg-orange-50 border-orange-200 text-orange-900',
+			icon: '📉'
+		},
+		{
+			title: 'Inactive NDC Selection',
+			description: 'Live FDA status checks prevent costly claim rejections from discontinued products.',
+			accent: 'bg-yellow-50 border-yellow-200 text-yellow-900',
+			icon: '⚠️'
+		},
+		{
+			title: 'Complex SIG Interpretation',
+			description:
+				'Confidence scores expose ambiguity and trigger AI assistance for edge-case instructions.',
+			accent: 'bg-blue-50 border-blue-200 text-blue-900',
+			icon: '🧠'
+		},
+		{
+			title: 'Unit Conversion Errors',
+			description: 'Canonical units (EA, mL, g, U, actuations) eliminate conversion mistakes.',
+			accent: 'bg-green-50 border-green-200 text-green-900',
+			icon: '🔤'
+		}
+	];
 
-					<!-- CTA Buttons -->
-					<div class="flex flex-col sm:flex-row gap-4 pt-2">
-						<a href="/calc" class="inline-flex items-center justify-center bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-							Get Started
-						</a>
-						<a href="#features" class="inline-flex items-center justify-center bg-white/20 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition border border-white/30">
-							Learn More
-						</a>
-					</div>
-				</div>
+	const stats = [
+		{ value: '95%+', label: 'Normalization Accuracy' },
+		{ value: '50%', label: 'Fewer Claim Rejections' },
+		{ value: '< 2s', label: 'Typical Response Time' }
+	];
+</script>
 
-				<!-- Visual Element -->
-				<div class="hidden md:block">
-					<div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
-						<div class="space-y-4">
-							<div class="bg-white/20 h-12 rounded-lg flex items-center px-4">
-								<span class="text-white text-sm">Enter Drug Name</span>
-							</div>
-							<div class="bg-white/20 h-12 rounded-lg flex items-center px-4">
-								<span class="text-white text-sm">Enter SIG</span>
-							</div>
-							<div class="bg-white/20 h-12 rounded-lg flex items-center px-4">
-								<span class="text-white text-sm">Enter Days Supply</span>
-							</div>
-							<div class="pt-4 border-t border-white/20">
-								<div class="bg-green-500/20 border border-green-500/50 rounded-lg p-4">
-									<p class="text-green-100 text-sm font-medium">✓ Recommendation Ready</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Features Section -->
-	<section id="features" class="py-20 sm:py-32 bg-gray-50">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="text-center mb-16">
-				<h2 class="text-4xl font-bold text-gray-900 mb-4">Core Capabilities</h2>
-				<p class="text-xl text-gray-600 max-w-2xl mx-auto">
-					Leveraging RxNorm, FDA NDC Directory, and AI to solve real pharmacy challenges
-				</p>
-			</div>
-
-			<!-- Features Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-				<!-- Feature 1 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">🎯</span>
-					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Smart SIG Parsing</h3>
-					<p class="text-gray-600 leading-relaxed">
-						Rules engine handles common patterns instantly, with AI fallback for complex cases. Shows confidence scores.
-					</p>
-				</div>
-
-				<!-- Feature 2 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">📦</span>
-					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Multi-Pack Optimization</h3>
-					<p class="text-gray-600 leading-relaxed">
-						Finds exact matches or optimal combinations of 2-3 packs, minimizing waste and maximizing accuracy.
-					</p>
-				</div>
-
-				<!-- Feature 3 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">🚨</span>
-					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Active NDC Verification</h3>
-					<p class="text-gray-600 leading-relaxed">
-						Real-time status from FDA NDC Directory with prominent warnings for discontinued products.
-					</p>
-				</div>
-
-				<!-- Feature 4 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">🧮</span>
-					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Unit Normalization</h3>
-					<p class="text-gray-600 leading-relaxed">
-						Handles tablets, liquids, insulin, inhalers—automatically converts all units to canonical forms.
-					</p>
-				</div>
-
-				<!-- Feature 5 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">⚡</span>
-					</div>
-				<h3 class="text-xl font-bold text-gray-900 mb-3">Fast with Caching</h3>
-				<p class="text-gray-600 leading-relaxed">
-					&lt;2 second response times with intelligent 24h browser caching for repeated queries.
-				</p>
-				</div>
-
-				<!-- Feature 6 -->
-				<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-lg transition">
-					<div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-						<span class="text-2xl">🔍</span>
-					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Transparent Results</h3>
-					<p class="text-gray-600 leading-relaxed">
-						See parsed SIG, confidence scores, and structured JSON output for verification and integration.
-					</p>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Problems Solved Section -->
-	<section class="py-20 sm:py-32 bg-white">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="text-center mb-16">
-				<h2 class="text-4xl font-bold text-gray-900 mb-4">Problems Solved</h2>
-				<p class="text-xl text-gray-600 max-w-2xl mx-auto">
-					Addressing real challenges in pharmacy operations
-				</p>
-			</div>
-
-			<!-- Problems Grid -->
-			<div class="space-y-6">
-				<div class="bg-red-50 border border-red-200 rounded-lg p-6">
-					<div class="flex items-start gap-4">
-						<div class="text-2xl">❌</div>
-						<div>
-							<h3 class="font-bold text-gray-900 mb-2">Dosage Form Mismatches</h3>
-							<p class="text-gray-600">
-								RxNorm normalization ensures prescriptions for "tablets" don't get filled with "capsules"
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="bg-orange-50 border border-orange-200 rounded-lg p-6">
-					<div class="flex items-start gap-4">
-						<div class="text-2xl">📉</div>
-						<div>
-							<h3 class="font-bold text-gray-900 mb-2">Package Size Confusion</h3>
-							<p class="text-gray-600">
-								Multi-pack optimizer finds the perfect combination when exact packs aren't available
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-					<div class="flex items-start gap-4">
-						<div class="text-2xl">⚠️</div>
-						<div>
-							<h3 class="font-bold text-gray-900 mb-2">Inactive NDC Selection</h3>
-							<p class="text-gray-600">
-								Real-time FDA verification prevents claim rejections from discontinued products
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-					<div class="flex items-start gap-4">
-						<div class="text-2xl">🧠</div>
-						<div>
-							<h3 class="font-bold text-gray-900 mb-2">Complex SIG Interpretation</h3>
-							<p class="text-gray-600">
-								AI-assisted parsing handles ambiguous instructions with 95%+ accuracy
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="bg-green-50 border border-green-200 rounded-lg p-6">
-					<div class="flex items-start gap-4">
-						<div class="text-2xl">🔤</div>
-						<div>
-							<h3 class="font-bold text-gray-900 mb-2">Unit Conversion Errors</h3>
-							<p class="text-gray-600">
-								Canonical unit system prevents mixing tablets, mL, units (insulin), and actuations
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- CTA Section -->
-	<section class="py-16 sm:py-24 bg-gradient-to-r from-indigo-600 to-purple-600">
-		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-			<h2 class="text-4xl font-bold text-white mb-6">Ready to reduce prescription errors by 50%?</h2>
-			<p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
-				Start using DoseMatch today. No signup required for MVP.
+<div class="space-y-16 pb-16">
+	<section class="fh-hero rounded-fhlg p-12 md:p-20 text-white text-center shadow-fh-xl relative overflow-hidden animate-fade-in">
+		<div class="absolute inset-0 bg-black/10 rounded-fhlg"></div>
+		<div class="relative z-10 space-y-6">
+			<h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">
+				DoseMatch
+			</h1>
+			<p class="text-xl md:text-2xl mb-6 opacity-95 font-light">From SIG to shelf—perfect fills, every time.</p>
+			<p class="max-w-2xl mx-auto text-base md:text-lg opacity-90 mb-10 font-light leading-relaxed">
+				AI-accelerated prescription matching that finds the right NDC package on the first try, preventing claim
+				rejections and speeding up fulfillment for busy pharmacy teams.
 			</p>
-			<a href="/calc" class="inline-flex items-center justify-center bg-white text-indigo-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition">
-				Open Calculator
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+				<a
+					href="/calc"
+					class="inline-flex items-center justify-center px-8 py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover"
+				>
+					Open the Calculator
+				</a>
+				<a
+					href="#features"
+					class="inline-flex items-center justify-center px-8 py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover"
+				>
+					See the Platform
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<section id="features" class="space-y-12 animate-fade-up">
+		<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+			<div>
+				<h2 class="text-4xl md:text-5xl font-bold text-fh-text900 leading-tight">Smarter workflows for pharmacy teams</h2>
+				<p class="text-fh-text600 mt-4 max-w-2xl text-lg leading-relaxed">
+					DoseMatch blends deterministic rules with explainable AI to deliver recommendations you can trust—and
+					explain to patients, payers, and auditors alike.
+				</p>
+			</div>
+			<a href="/calc" class="px-6 py-3 bg-gradient-to-r from-fh-blue to-fh-purple text-white rounded-fhmd font-semibold shadow-fh hover:shadow-fh-lg btn-hover whitespace-nowrap">
+				Calculate an NDC
 			</a>
+		</div>
+
+		<div class="grid gap-6 md:grid-cols-3">
+			{#each features as feature, i}
+				<div class="bg-white/60 backdrop-blur-sm rounded-fhlg border border-fh-border/30 shadow-fh p-8 space-y-4 card-hover group" style="animation-delay: {i * 100}ms">
+					<div class="w-14 h-14 rounded-fhmd bg-gradient-to-br from-fh-blue/20 to-fh-purple/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
+						{feature.icon}
+					</div>
+					<h3 class="text-xl font-bold text-fh-text900">{feature.title}</h3>
+					<p class="text-fh-text600 leading-relaxed">{feature.description}</p>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-10 md:p-12 space-y-8 animate-fade-up">
+		<h2 class="text-4xl md:text-5xl font-bold text-fh-text900">How DoseMatch works</h2>
+		<div class="grid gap-6 md:grid-cols-3">
+			{#each workflow as step, index}
+				<div class="rounded-fhlg border border-fh-border/30 bg-gradient-to-br from-fh-blue-light/30 to-fh-purple-light/30 backdrop-blur-sm p-8 space-y-4 relative group hover:shadow-fh-lg transition-all duration-300">
+					<div class="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-br from-fh-blue to-fh-purple text-white font-bold flex items-center justify-center shadow-fh group-hover:scale-110 transition-transform duration-300">
+						{index + 1}
+					</div>
+					<h3 class="text-lg font-bold text-fh-text900 mt-2">{step.title}</h3>
+					<p class="text-fh-text600 leading-relaxed">{step.description}</p>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section class="space-y-8 animate-fade-up">
+		<h2 class="text-4xl md:text-5xl font-bold text-fh-text900">Problems solved</h2>
+		<div class="grid gap-5 md:grid-cols-2">
+			{#each problems as problem}
+				<div class={`rounded-fhlg border-2 backdrop-blur-sm p-6 flex gap-4 items-start group hover:shadow-fh-lg transition-all duration-300 ${problem.accent} bg-opacity-50`}>
+					<div class="text-3xl leading-none group-hover:scale-110 transition-transform duration-300">{problem.icon}</div>
+					<div class="flex-1">
+						<h3 class="text-lg font-bold mb-2 text-fh-text900">{problem.title}</h3>
+						<p class="text-sm leading-relaxed opacity-90">{problem.description}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-10 md:p-12 animate-fade-up">
+		<div class="grid gap-8 md:grid-cols-3 text-center">
+			{#each stats as stat, i}
+				<div class="group" style="animation-delay: {i * 100}ms">
+					<div class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-fh-blue to-fh-purple bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">
+						{stat.value}
+					</div>
+					<div class="text-fh-text600 text-sm uppercase tracking-widest font-semibold">{stat.label}</div>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<section class="fh-hero rounded-fhlg p-12 md:p-20 text-center text-white shadow-fh-xl relative overflow-hidden animate-fade-up">
+		<div class="absolute inset-0 bg-black/5 rounded-fhlg"></div>
+		<div class="relative z-10 space-y-6">
+			<h2 class="text-4xl md:text-6xl font-bold leading-tight">Ready to reduce prescription errors by 50%?</h2>
+			<p class="text-lg opacity-95 mb-8 max-w-2xl mx-auto font-light">
+				Run a real prescription through the calculator to see the SIG breakdown, pack recommendation, and guardrail
+				warnings in seconds.
+			</p>
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+				<a
+					href="/calc"
+					class="inline-flex items-center justify-center px-8 py-3 bg-white text-fh-blue rounded-fhmd font-semibold shadow-fh-lg hover:shadow-fh-xl hover:scale-105 btn-hover"
+				>
+					Try the Calculator
+				</a>
+				<a
+					href="https://rxnav.nlm.nih.gov/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center justify-center px-8 py-3 bg-white/20 text-white rounded-fhmd font-semibold border-2 border-white/50 hover:bg-white/30 hover:border-white/80 btn-hover"
+				>
+					Explore the Data Sources
+				</a>
+			</div>
 		</div>
 	</section>
 </div>
