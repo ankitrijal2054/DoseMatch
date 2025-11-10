@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 4 - SIG Parsing (Next)  
-**Status:** 🟢 Phase 3 Complete, Moving Forward
+**Current Phase:** Phase 5 - Quantity Calculation (Next)  
+**Status:** 🟢 Phase 4 Complete, Moving Forward
 
 ---
 
@@ -10,25 +10,45 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 4: SIG Parsing**
-
-   - Rules-based parser (client-side) - sig/rules.ts
-   - LLM parser (Cloud Functions) - functions/src/parseSig.ts
-   - Unified parser orchestration - sig/index.ts
-   - Confidence thresholds and fallback logic
-
-2. **Next: Phase 5 - Quantity Calculation**
+1. **Start Phase 5: Quantity Calculation**
 
    - Quantity calculator engine
    - Simple formula: amountPerDose × frequencyPerDay × daysSupply
 
-3. **Then: Phase 6 - Pack Selection Engine**
+2. **Next: Phase 6 - Pack Selection Engine**
+
    - Multi-pack optimization algorithm
    - Exact match, multi-pack, and nearest strategies
 
 ---
 
 ## Recent Changes
+
+### Phase 4 Completed (Nov 10, 2025) ✅
+
+1. **sig/rules.ts Created**
+
+   - Dose amount extraction using regex patterns
+   - Frequency parsing with 20+ abbreviations (QD, BID, TID, Q6H, etc.)
+   - Unit extraction and normalization to canonical forms
+   - Confidence scoring with 0.7+ threshold
+   - Support for explicit "X times daily" patterns
+
+2. **functions/src/parseSig.ts - LLM Fallback**
+
+   - OpenAI GPT-4o-mini integration (already implemented)
+   - System prompt for structured SIG parsing
+   - JSON response validation and error handling
+   - Clamping of values (0.1-24 frequency range)
+
+3. **sig/index.ts Created**
+
+   - Unified parser orchestration
+   - Rules-first strategy (fast), LLM fallback (reliable)
+   - 0.75 confidence threshold for switching to LLM
+   - Proper error handling chain with fallback defaults (1 EA, 1x/day)
+
+**Impact:** Complete SIG parsing pipeline with redundancy and confidence-based routing
 
 ### Phase 3 Completed (Nov 10, 2025) ✅
 

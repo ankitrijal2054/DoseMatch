@@ -1,8 +1,8 @@
 # DoseMatch - Progress Tracker
 
 **Project Start:** November 10, 2025  
-**Current Phase:** Phase 4 (SIG Parsing - Next)  
-**Overall Progress:** 27% (Phase 0 + Phase 1 + Phase 2 + Phase 3 Complete)
+**Current Phase:** Phase 5 (Quantity Calculation - Next)  
+**Overall Progress:** 33% (Phase 0 + Phase 1 + Phase 2 + Phase 3 + Phase 4 Complete)
 
 ---
 
@@ -89,11 +89,32 @@
 
 **Status:** 🟢 **API adapters complete, no linter errors**
 
+### Phase 4: SIG Parsing (COMPLETE)
+
+- ✅ 4.1 Rules-Based Parser (sig/rules.ts)
+  - ✅ Dose amount extraction (regex)
+  - ✅ Frequency parsing (QD, BID, TID, etc.)
+  - ✅ Unit extraction and normalization
+  - ✅ Confidence scoring (0.7+ threshold)
+  - ✅ Support for explicit frequency patterns
+- ✅ 4.2 Cloud Function: LLM Parser (functions/src/parseSig.ts)
+  - ✅ OpenAI GPT-4o-mini integration
+  - ✅ System prompt for SIG parsing
+  - ✅ JSON response validation
+  - ✅ Error handling with HttpsError
+- ✅ 4.3 Unified Parser (sig/index.ts)
+  - ✅ Rules first, LLM fallback (0.75 threshold)
+  - ✅ Confidence threshold handling
+  - ✅ Default fallback (1 EA once daily)
+  - ✅ Proper error handling chain
+
+**Status:** 🟢 **SIG Parsing complete, no linter errors**
+
 ---
 
 ## 🚧 What's In Progress (Current Work)
 
-**Phase 4: SIG Parsing - Ready to start**
+**Phase 5: Quantity Calculation - Ready to start**
 
 ---
 
@@ -377,7 +398,7 @@
 | 1     | Domain Types & Units     | ✅ Complete    | 100%     |
 | 2     | Caching Layer            | ✅ Complete    | 100%     |
 | 3     | API Adapters             | ✅ Complete    | 100%     |
-| 4     | SIG Parsing              | ⏳ Not Started | 0%       |
+| 4     | SIG Parsing              | ✅ Complete    | 100%     |
 | 5     | Quantity Calculation     | ⏳ Not Started | 0%       |
 | 6     | Pack Selection           | ⏳ Not Started | 0%       |
 | 7     | Warnings                 | ⏳ Not Started | 0%       |
@@ -389,7 +410,7 @@
 | 13    | Documentation & Polish   | ⏳ Not Started | 0%       |
 | 14    | Final Testing & Launch   | ⏳ Not Started | 0%       |
 
-**Overall Progress:** 5/15 phases complete (33%)
+**Overall Progress:** 6/15 phases complete (40%)
 
 ---
 
