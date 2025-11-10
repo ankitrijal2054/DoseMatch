@@ -1,8 +1,8 @@
 # DoseMatch - Progress Tracker
 
 **Project Start:** November 10, 2025  
-**Current Phase:** Phase 3 (API Adapters)  
-**Overall Progress:** 20% (Phase 0 + Phase 1 + Phase 2 Complete)
+**Current Phase:** Phase 4 (SIG Parsing - Next)  
+**Overall Progress:** 27% (Phase 0 + Phase 1 + Phase 2 + Phase 3 Complete)
 
 ---
 
@@ -66,11 +66,34 @@
 
 **Status:** 🟢 **Caching layer complete, no linter errors**
 
+### Phase 3: API Adapters (COMPLETE)
+
+- ✅ 3.1 RxNorm Adapter (adapters/rxnorm.ts)
+  - ✅ Drug name → RxCUI normalization
+  - ✅ NDC → RxCUI lookup
+  - ✅ Get drug properties (dose form, strength, synonyms)
+  - ✅ Retry logic with exponential backoff (max 2 retries)
+  - ✅ 5000ms timeout
+  - ✅ Cache integration with 24h TTL
+- ✅ 3.2 FDA Adapter (adapters/fda.ts)
+  - ✅ RxCUI → NDC packages retrieval
+  - ✅ Parse package sizes and units
+  - ✅ Extract active/inactive status
+  - ✅ Retry logic with exponential backoff
+  - ✅ Sorting: ACTIVE first, then by package size
+  - ✅ Cache integration with 24h TTL
+- ✅ 3.3 Test Page (test-adapters/+page.svelte)
+  - ✅ Manual testing interface
+  - ✅ Cache behavior verification
+  - ✅ Console logging for debugging
+
+**Status:** 🟢 **API adapters complete, no linter errors**
+
 ---
 
 ## 🚧 What's In Progress (Current Work)
 
-**Phase 3: API Adapters - Ready to start**
+**Phase 4: SIG Parsing - Ready to start**
 
 ---
 
@@ -128,22 +151,22 @@
 
 ---
 
-### Phase 3: API Adapters (NOT STARTED)
+### Phase 3: API Adapters (✅ COMPLETE)
 
-- [ ] 3.1 RxNorm Adapter (adapters/rxnorm.ts)
-  - [ ] Drug name → RxCUI
-  - [ ] NDC → RxCUI
-  - [ ] Get drug properties (dose form, strength)
-  - [ ] Retry logic, timeouts
-  - [ ] Cache integration
-- [ ] 3.2 FDA Adapter (adapters/fda.ts)
-  - [ ] RxCUI → NDC packages
-  - [ ] Parse package sizes and units
-  - [ ] Extract active/inactive status
-  - [ ] Retry logic, timeouts
-  - [ ] Cache integration
+- [x] 3.1 RxNorm Adapter (adapters/rxnorm.ts)
+  - [x] Drug name → RxCUI
+  - [x] NDC → RxCUI
+  - [x] Get drug properties (dose form, strength)
+  - [x] Retry logic, timeouts
+  - [x] Cache integration
+- [x] 3.2 FDA Adapter (adapters/fda.ts)
+  - [x] RxCUI → NDC packages
+  - [x] Parse package sizes and units
+  - [x] Extract active/inactive status
+  - [x] Retry logic, timeouts
+  - [x] Cache integration
 
-**Estimate:** 3-4 hours
+**Status:** ✅ Complete - No linter errors
 
 ---
 
@@ -353,7 +376,7 @@
 | 0     | Project Foundation       | ✅ Complete    | 100%     |
 | 1     | Domain Types & Units     | ✅ Complete    | 100%     |
 | 2     | Caching Layer            | ✅ Complete    | 100%     |
-| 3     | API Adapters             | ⏳ Not Started | 0%       |
+| 3     | API Adapters             | ✅ Complete    | 100%     |
 | 4     | SIG Parsing              | ⏳ Not Started | 0%       |
 | 5     | Quantity Calculation     | ⏳ Not Started | 0%       |
 | 6     | Pack Selection           | ⏳ Not Started | 0%       |
@@ -366,7 +389,7 @@
 | 13    | Documentation & Polish   | ⏳ Not Started | 0%       |
 | 14    | Final Testing & Launch   | ⏳ Not Started | 0%       |
 
-**Overall Progress:** 4/15 phases complete (27%)
+**Overall Progress:** 5/15 phases complete (33%)
 
 ---
 

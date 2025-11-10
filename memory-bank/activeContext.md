@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 3 - API Adapters  
-**Status:** 🟢 Phase 2 Complete, Moving Forward
+**Current Phase:** Phase 4 - SIG Parsing (Next)  
+**Status:** 🟢 Phase 3 Complete, Moving Forward
 
 ---
 
@@ -10,27 +10,55 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 3: API Adapters**
+1. **Start Phase 4: SIG Parsing**
 
-   - RxNorm adapter for drug normalization (adapters/rxnorm.ts)
-   - FDA adapter for NDC package retrieval (adapters/fda.ts)
-   - Integrate caching layer with adapters
-   - Retry logic and timeouts
-   - Error handling
+   - Rules-based parser (client-side) - sig/rules.ts
+   - LLM parser (Cloud Functions) - functions/src/parseSig.ts
+   - Unified parser orchestration - sig/index.ts
+   - Confidence thresholds and fallback logic
 
-2. **Next: Phase 4 - SIG Parsing**
+2. **Next: Phase 5 - Quantity Calculation**
 
-   - Rules-based parser (client-side)
-   - LLM parser (Cloud Functions)
-   - Unified parser orchestration
-
-3. **Then: Phase 5 - Quantity Calculation**
    - Quantity calculator engine
    - Simple formula: amountPerDose × frequencyPerDay × daysSupply
+
+3. **Then: Phase 6 - Pack Selection Engine**
+   - Multi-pack optimization algorithm
+   - Exact match, multi-pack, and nearest strategies
 
 ---
 
 ## Recent Changes
+
+### Phase 3 Completed (Nov 10, 2025) ✅
+
+1. **adapters/rxnorm.ts Created**
+
+   - Drug name → RxCUI normalization
+   - NDC → RxCUI lookup
+   - Drug properties extraction (dose form, strength, synonyms)
+   - Retry logic with exponential backoff (max 2 retries)
+   - Cache integration with 24h TTL
+   - 5000ms timeout
+   - No linter errors
+
+2. **adapters/fda.ts Created**
+
+   - RxCUI → NDC packages retrieval
+   - Package size and unit parsing
+   - Active/inactive status detection
+   - Retry logic with exponential backoff
+   - Cache integration
+   - Sorting: ACTIVE first, then by package size
+   - No linter errors
+
+3. **test-adapters/+page.svelte Created**
+   - Manual test page for adapter verification
+   - Real API call testing
+   - Cache behavior demonstration
+   - Console logging for debugging
+
+**Impact:** Complete API integration for drug normalization and NDC retrieval, with robust error handling and caching
 
 ### Phase 2 Completed (Nov 10, 2025) ✅
 
