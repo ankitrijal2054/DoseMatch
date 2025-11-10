@@ -1,0 +1,37 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*
+!.env.example
+functions/.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.firebaserc
+
+# Build outputs
+frontend/build/
+frontend/.svelte-kit/
+frontend/.output/
+functions/lib/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
