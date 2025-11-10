@@ -112,9 +112,30 @@
 
 ---
 
+## ✅ What Works (Completed)
+
+### Phase 5: Quantity Calculation Engine (COMPLETE)
+
+- ✅ 5.1 Quantity Calculator (engines/quantity.ts)
+  - ✅ computeTotalUnits() function
+  - ✅ Formula: amountPerDose × frequencyPerDay × daysSupply
+  - ✅ Math.ceil() for rounding up
+  - ✅ Input validation (positive values)
+  - ✅ Safety limit check (1M units max)
+  - ✅ Comprehensive error messages
+- ✅ 5.2 Unit Tests (engines/quantity.test.ts)
+  - ✅ 20+ test cases covering all scenarios
+  - ✅ Real-world pharmacy examples
+  - ✅ Error handling validation
+  - ✅ Edge cases (fractional doses, high frequency)
+
+**Status:** 🟢 **Quantity calculator complete, no linter errors**
+
+---
+
 ## 🚧 What's In Progress (Current Work)
 
-**Phase 5: Quantity Calculation - Ready to start**
+**Phase 6: Pack Selection Engine - Ready to start**
 
 ---
 
@@ -399,7 +420,7 @@
 | 2     | Caching Layer            | ✅ Complete    | 100%     |
 | 3     | API Adapters             | ✅ Complete    | 100%     |
 | 4     | SIG Parsing              | ✅ Complete    | 100%     |
-| 5     | Quantity Calculation     | ⏳ Not Started | 0%       |
+| 5     | Quantity Calculation     | ✅ Complete    | 100%     |
 | 6     | Pack Selection           | ⏳ Not Started | 0%       |
 | 7     | Warnings                 | ⏳ Not Started | 0%       |
 | 8     | Main Controller          | ⏳ Not Started | 0%       |
@@ -410,7 +431,7 @@
 | 13    | Documentation & Polish   | ⏳ Not Started | 0%       |
 | 14    | Final Testing & Launch   | ⏳ Not Started | 0%       |
 
-**Overall Progress:** 6/15 phases complete (40%)
+**Overall Progress:** 7/15 phases complete (47%)
 
 ---
 

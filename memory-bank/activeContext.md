@@ -1,8 +1,8 @@
 # DoseMatch - Active Context
 
 **Last Updated:** November 10, 2025  
-**Current Phase:** Phase 5 - Quantity Calculation (Next)  
-**Status:** 🟢 Phase 4 Complete, Moving Forward
+**Current Phase:** Phase 6 - Pack Selection Engine (Next)  
+**Status:** 🟢 Phase 5 Complete, Moving Forward
 
 ---
 
@@ -10,19 +10,39 @@
 
 ### Immediate Next Steps
 
-1. **Start Phase 5: Quantity Calculation**
+1. **Start Phase 6: Pack Selection Engine**
 
-   - Quantity calculator engine
-   - Simple formula: amountPerDose × frequencyPerDay × daysSupply
+   - Pack selection algorithm
+   - Strategies: exact match, multi-pack, nearest
+   - Scoring and ranking
 
-2. **Next: Phase 6 - Pack Selection Engine**
+2. **Next: Phase 7 - Warnings & Evaluation**
 
-   - Multi-pack optimization algorithm
-   - Exact match, multi-pack, and nearest strategies
+   - Warning system
+   - Inactive NDC detection, overfill/underfill alerts
 
 ---
 
 ## Recent Changes
+
+### Phase 5 Completed (Nov 10, 2025) ✅
+
+1. **engines/quantity.ts - Quantity Calculator**
+
+   - computeTotalUnits() function
+   - Formula: amountPerDose × frequencyPerDay × daysSupply (rounded up)
+   - Input validation (all values must be positive)
+   - Safety limit check (max 1M units to catch data entry errors)
+   - Comprehensive error messages
+
+2. **engines/quantity.test.ts - Unit Tests**
+
+   - 20+ test cases covering all common scenarios
+   - Real-world pharmacy examples (Amoxicillin, Lisinopril, insulin)
+   - Edge cases: fractional doses, high frequency, various units
+   - Error handling validation (negative values, zero frequency, exceeds limits)
+
+**Impact:** Quantity calculation pipeline ready for pack selection engine
 
 ### Phase 4 Completed (Nov 10, 2025) ✅
 
