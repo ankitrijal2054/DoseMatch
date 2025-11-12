@@ -12,7 +12,6 @@
 	let error: string | null = null;
 	let result: ResultPayload | null = null;
 	let parsedSig: NormalizedSig | null = null;
-	let showJson = false;
 	let showExplainer = false;
 	let explanation: string | null = null;
 	let explainerLoading = false;
@@ -70,7 +69,6 @@
 		result = null;
 		parsedSig = null;
 		error = null;
-		showJson = false;
 		showExplainer = false;
 		explanation = null;
 		explainerError = null;
@@ -168,9 +166,52 @@
 
 	let recommendedOption: ResultPayload['recommendation']['recommended'] | null = null;
 	let alternativeOptions: RecommendationOption[] = [];
+	let showJsonModal = false;
 
 	$: recommendedOption = result ? result.recommendation.recommended : null;
 	$: alternativeOptions = result ? result.recommendation.alternatives : [];
+
+	// Generate simplified JSON for pharmacy API consumption
+	function getSimplifiedJson() {
+		if (!result || !recommendedOption) return {};
+		return {
+			prescription: {
+				drug: {
+					name: result.rxnorm.synonyms?.[0] || 'Unknown',
+					strength: result.rxnorm.strength,
+					doseForm: result.rxnorm.doseForm
+				},
+				instructions: {
+					dose: result.normalizedSig.amountPerDose,
+					doseUnit: result.normalizedSig.unit,
+					frequencyPerDay: result.normalizedSig.frequencyPerDay,
+					daysSupply: result.normalizedSig.daysSupply,
+					confidence: Math.round(result.normalizedSig.confidence * 100) + '%'
+				},
+				targetQuantity: result.targetQuantity.totalUnits,
+				targetUnit: result.targetQuantity.unit
+			},
+			recommendation: {
+				ndc: recommendedOption.ndc,
+				packageSize: recommendedOption.packageSize,
+				packageUnit: recommendedOption.unit,
+				ndcStatus: recommendedOption.status,
+				totalDispensed: recommendedOption.totalDispensed,
+				dispensingPlan: recommendedOption.packsUsed.map((pack: any) => ({
+					ndc: pack.ndc,
+					quantity: pack.count
+				})),
+				matchType: recommendedOption.matchType,
+				overfillPercent: recommendedOption.overfillPercent,
+				underfillPercent: recommendedOption.underfillPercent
+			},
+			warnings: result.warnings.length > 0 ? result.warnings.map((w: any) => ({
+				severity: w.severity,
+				message: w.message
+			})) : null,
+			timestamp: new Date().toISOString()
+		};
+	}
 </script>
 
 <div class="flex flex-col space-y-4 animate-fade-in p-2 sm:p-4">
@@ -290,7 +331,6 @@ Take 1 tablet twice daily with meals"
 						result = null;
 						parsedSig = null;
 						error = null;
-						showJson = false;
 					}}
 					class="text-xs sm:text-sm font-semibold text-fh-blue hover:text-fh-purple hover:bg-fh-blue/10 px-2 sm:px-3 py-1 rounded-fhsm transition-all"
 				>
@@ -416,10 +456,10 @@ Take 1 tablet twice daily with meals"
 					</button>
 					<button
 						type="button"
-						on:click={() => (showJson = !showJson)}
+						on:click={() => (showJsonModal = !showJsonModal)}
 						class="px-3 sm:px-4 py-1 sm:py-2 rounded-fhsm border border-fh-border text-xs sm:text-sm font-semibold text-fh-text600 hover:bg-fh-panel2 transition"
 					>
-						{showJson ? 'Hide JSON' : 'Show JSON'}
+						View JSON
 					</button>
 					<button
 						type="button"
@@ -436,10 +476,6 @@ Take 1 tablet twice daily with meals"
 						<span>{showExplainer ? 'Hide AI Explanation' : 'Show AI Explanation'}</span>
 					</button>
 				</div>
-
-				{#if showJson}
-					<pre class="max-h-64 overflow-y-auto overflow-x-auto rounded-fhmd border border-fh-border bg-fh-text900 text-gray-100 text-xs p-3">{JSON.stringify(result, null, 2)}</pre>
-				{/if}
 
 				{#if showExplainer}
 					<div class="space-y-3 rounded-fhmd border border-fh-border bg-gradient-to-br from-fh-purple-light/20 to-fh-blue-light/20 backdrop-blur-sm p-4 sm:p-6">
@@ -549,4 +585,64 @@ Take 1 tablet twice daily with meals"
 		</section>
 	{/if}
 </div>
+
+	{#if showJsonModal && result}
+	<!-- Modal Backdrop -->
+	<div 
+		class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 flex items-center justify-center p-4"
+		on:click={() => (showJsonModal = false)}
+		role="presentation"
+	>
+		<!-- Modal Content -->
+		<div 
+			class="bg-white rounded-fhlg border border-fh-border shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col animate-fade-up"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="json-modal-title"
+			on:click|stopPropagation
+			on:keydown={(e) => e.key === 'Escape' && (showJsonModal = false)}
+		>
+			<!-- Modal Header -->
+			<div class="flex items-center justify-between gap-4 border-b border-fh-border p-4 sm:p-6 flex-shrink-0">
+				<div>
+					<h2 id="json-modal-title" class="text-lg sm:text-xl font-semibold text-fh-text900">Prescription JSON</h2>
+					<p class="text-xs text-fh-text600 mt-1">Ready for pharmacy API consumption</p>
+				</div>
+				<button
+					type="button"
+					on:click={() => (showJsonModal = false)}
+					class="flex-shrink-0 text-fh-text600 hover:text-fh-text900 transition"
+					aria-label="Close modal"
+				>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Modal Body -->
+			<div class="flex-1 overflow-y-auto overflow-x-auto p-4 sm:p-6">
+				<pre class="bg-fh-text900 text-gray-100 text-xs rounded-fhsm p-4 font-mono break-words whitespace-pre-wrap word-break">{JSON.stringify(getSimplifiedJson(), null, 2)}</pre>
+			</div>
+
+			<!-- Modal Footer -->
+			<div class="border-t border-fh-border p-4 sm:p-6 flex items-center gap-3 flex-shrink-0 bg-fh-panel1">
+				<button
+					type="button"
+					on:click={() => copyToClipboard(JSON.stringify(getSimplifiedJson(), null, 2))}
+					class="px-4 py-2 bg-fh-blue text-white rounded-fhsm text-sm font-semibold hover:bg-fh-purple transition"
+				>
+					Copy JSON
+				</button>
+				<button
+					type="button"
+					on:click={() => (showJsonModal = false)}
+					class="px-4 py-2 border border-fh-border text-fh-text600 rounded-fhsm text-sm font-semibold hover:bg-fh-panel2 transition"
+				>
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
 

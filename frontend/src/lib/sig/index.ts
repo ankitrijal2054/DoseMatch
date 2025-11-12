@@ -3,7 +3,7 @@ import { normalizeUnit } from "../units";
 import { config } from "../config";
 import type { NormalizedSig } from "../types";
 
-const CONFIDENCE_THRESHOLD = 0.75;
+const CONFIDENCE_THRESHOLD = 0.90;
 
 async function callLLMFunction(
   sigText: string,
