@@ -15,6 +15,6 @@ export const config = {
   functions: {
     baseUrl:
       import.meta.env.PUBLIC_FUNCTIONS_URL ||
-      "http://127.0.0.1:5001/dosematch-dev/us-central1",
+      "https://us-central1-dosematch.cloudfunctions.net",
   },
 };

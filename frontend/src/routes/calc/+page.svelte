@@ -2,7 +2,8 @@
 	import { processRecommendation } from '$lib/controller';
 	import type { NormalizedSig, RecommendationOption, ResultPayload, Warning } from '$lib/types';
 	import { onMount } from 'svelte';
-	import { getFunctions, httpsCallable } from 'firebase/functions';
+	import { httpsCallable } from 'firebase/functions';
+	import { getFirebaseFunctions } from '$lib/firebase';
 
 	let drugQuery = '';
 	let sigText = '';
@@ -86,7 +87,7 @@
 		explanation = null;
 
 		try {
-			const functions = getFunctions();
+			const functions = getFirebaseFunctions();
 			const explainFn = httpsCallable(functions, 'explainRecommendation');
 
 			const response = await explainFn({
