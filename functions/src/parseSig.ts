@@ -34,18 +34,22 @@ Rules:
 - For "as needed" or "prn", assume once daily for quantity purposes
 - DO NOT include any text outside the JSON object`;
 
-export const parseSigWithLLM = functions.https.onCall(
-  async (data: ParseSigRequest): Promise<ParseSigResponse> => {
-    const { sigText } = data;
+export const parseSigWithLLM = functions
+  .runWith({
+    secrets: ["OPENAI_API_KEY"],
+  })
+  .https.onCall(
+    async (data: ParseSigRequest): Promise<ParseSigResponse> => {
+      const { sigText } = data;
 
-    console.log(`[SIG LLM] Parsing: "${sigText}"`);
+      console.log(`[SIG LLM] Parsing: "${sigText}"`);
 
-    try {
-      const apiKey = process.env.OPENAI_API_KEY;
+      try {
+        const apiKey = process.env.OPENAI_API_KEY;
 
-      if (!apiKey) {
-        throw new Error("OpenAI API key not configured");
-      }
+        if (!apiKey) {
+          throw new Error("OpenAI API key not configured");
+        }
 
       const response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
@@ -98,6 +102,6 @@ export const parseSigWithLLM = functions.https.onCall(
         "Failed to parse SIG with LLM",
         error.message
       );
+      }
     }
-  }
-);
+  );

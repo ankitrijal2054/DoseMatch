@@ -1,4 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+@theme {
+  --color-fh-blue: #2f56d2;
+  --color-fh-magenta: #c23d9c;
+  --color-fh-purple: #7d39ac;
+  --color-fh-bg: #eef4ff;
+  --color-fh-panel1: #f5f9ff;
+  --color-fh-panel2: #f0f5ff;
+  --color-fh-border: #d2d6e9;
+  --color-fh-text900: #0f172a;
+  --color-fh-text600: #3b4256;
+  --color-fh-blue-light: #e8efff;
+  --color-fh-purple-light: #f3ecff;
+  --color-fh-success: #10b981;
+  --color-fh-success-light: #d1fae5;
+  --color-fh-error: #ef4444;
+  --color-fh-error-light: #fee2e2;
+  --color-fh-warning: #f59e0b;
+  --color-fh-warning-light: #fef3c7;
+
+  --radius-fhsm: 10px;
+  --radius-fhmd: 14px;
+  --radius-fhlg: 18px;
+
+  --shadow-fh: 0 10px 30px rgba(15, 23, 42, 0.06);
+  --shadow-fh-md: 0 4px 20px rgba(15, 23, 42, 0.08);
+  --shadow-fh-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --shadow-fh-xl: 0 30px 60px rgba(15, 23, 42, 0.15);
+
+  --font-family-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
+    sans-serif;
+
+  --animation-fade-in: fadeIn 0.5s ease-in;
+  --animation-fade-up: fadeUp 0.6s ease-out;
+  --animation-slide-in: slideIn 0.5s ease-out;
+}
