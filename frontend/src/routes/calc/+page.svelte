@@ -155,12 +155,26 @@
 			result = recommendation;
 			parsedSig = recommendation.normalizedSig;
 		} catch (err) {
-			if (err && typeof err === 'object' && 'message' in err) {
+			console.error('Recommendation error:', err);
+			
+			if (err && typeof err === 'object' && 'code' in err) {
+				const errorObj = err as { code: string; message?: string; isNdc?: boolean; input?: string };
+				
+				// Handle specific error codes with user-friendly messages
+				if (errorObj.code === 'RXCUI_NOT_FOUND') {
+					error = errorObj.message || 'Drug or NDC not found in RxNorm.';
+				} else if (errorObj.code === 'RXNORM_API_ERROR') {
+					error = errorObj.message || 'RxNorm API error. Please try again.';
+				} else if ('message' in err) {
+					error = (err as { message?: string }).message ?? 'Unable to process the recommendation. Please try again.';
+				} else {
+					error = 'Unable to process the recommendation. Please try again.';
+				}
+			} else if (err && typeof err === 'object' && 'message' in err) {
 				error = (err as { message?: string }).message ?? 'Unable to process the recommendation. Please try again.';
 			} else {
 				error = 'Unable to process the recommendation. Please try again.';
 			}
-			console.error('Recommendation error:', err);
 		} finally {
 			loading = false;
 		}
@@ -345,15 +359,27 @@ Take 1 tablet twice daily with meals"
 					</button>
 				</form>
 
-				{#if error}
-					<div class="rounded-fhmd border border-red-200 bg-red-50 p-4 text-sm text-red-900 flex gap-3">
-						<span class="text-lg">❌</span>
-						<div>
-							<h3 class="font-semibold">We couldn’t process that</h3>
-							<p class="mt-1">{error}</p>
+			{#if error}
+				<div class="rounded-fhlg border-2 border-red-300 bg-red-50 p-4 sm:p-5 text-sm text-red-900 animate-fade-up">
+					<div class="flex gap-3">
+						<span class="text-2xl flex-shrink-0">⚠️</span>
+						<div class="flex-1 min-w-0">
+							<h3 class="font-bold text-base text-red-900 mb-2">Unable to Process Request</h3>
+							<p class="text-red-800 mb-3">{error}</p>
+							<div class="text-xs text-red-700 bg-red-100 rounded-fhmd p-3 border border-red-200">
+								<p class="font-semibold mb-1">💡 Troubleshooting Tips:</p>
+								<ul class="list-disc list-inside space-y-1 ml-1">
+									<li>Double-check spelling and format of drug name or NDC</li>
+									<li>If using an NDC, ensure it's 10-11 digits (e.g., 00093-7701-01)</li>
+									<li>Try using the generic drug name instead (e.g., "lisinopril 10mg")</li>
+									<li>If the NDC is old, it may be inactive - try a different NDC</li>
+									<li>Check the "Quick presets" for example formats</li>
+								</ul>
+							</div>
 						</div>
 					</div>
-				{/if}
+				</div>
+			{/if}
 			</section>
 
 		<!-- Right: Quick Presets -->
@@ -395,6 +421,24 @@ Take 1 tablet twice daily with meals"
 	<!-- Results and Alternatives below (full width) -->
 	<div class="space-y-4">
 			{#if result}
+				<!-- Inactive NDC Warning Banner -->
+				{#if result.directNdcCheck?.isInactive}
+					<div class="bg-red-50 border-2 border-red-500 rounded-fhlg p-4 sm:p-6 animate-fade-up">
+						<div class="flex items-start gap-3">
+							<div class="text-2xl flex-shrink-0">⚠️</div>
+							<div class="flex-1 min-w-0">
+								<h3 class="text-lg font-bold text-red-900 mb-2">Inactive NDC Detected</h3>
+								<p class="text-sm text-red-800 mb-3">
+									The NDC you entered (<strong class="font-mono">{result.directNdcCheck.ndc}</strong>) is <strong class="uppercase">{result.directNdcCheck.status}</strong> and cannot be dispensed.
+								</p>
+								<p class="text-sm text-red-700">
+									We've found an active alternative recommendation below that matches the same drug.
+								</p>
+							</div>
+						</div>
+					</div>
+				{/if}
+
 				<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-4 sm:p-6 space-y-4 sm:space-y-6 animate-fade-up">
 					{#if recommendedOption}
 						<div class="flex flex-col gap-2 min-w-0">

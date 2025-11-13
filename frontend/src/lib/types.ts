@@ -72,6 +72,12 @@ export interface Warning {
   severity: "error" | "warning" | "info";
 }
 
+export interface DirectNdcCheck {
+  ndc: string;
+  status: "ACTIVE" | "INACTIVE" | "UNKNOWN";
+  isInactive: boolean;
+}
+
 export interface ResultPayload {
   input: DrugInput;
   normalizedSig: NormalizedSig;
@@ -82,6 +88,7 @@ export interface ResultPayload {
   };
   recommendation: Recommendation;
   warnings: Warning[];
+  directNdcCheck?: DirectNdcCheck; // If user provided an NDC directly
   performanceMetrics?: {
     totalMs: number;
     rxnormMs: number;

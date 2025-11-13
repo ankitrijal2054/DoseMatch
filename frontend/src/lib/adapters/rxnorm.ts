@@ -54,11 +54,11 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
           8
         )}-${cleanNdc.substring(8, 10)}`;
       } else if (cleanNdc.length === 11) {
-        // 11-digit: already has proper digit count
+        // 11-digit: format as NNNNN-NNNN-NN (5-4-2)
         formattedNdc = `${cleanNdc.substring(0, 5)}-${cleanNdc.substring(
           5,
-          8
-        )}-${cleanNdc.substring(8, 11)}`;
+          9
+        )}-${cleanNdc.substring(9, 11)}`;
       }
 
       console.log(
@@ -94,7 +94,14 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
     }
 
     if (!rxcui) {
-      throw new Error("No RxCUI found");
+      const errorMsg = isNdc 
+        ? `NDC "${input}" not found in RxNorm. The NDC may be invalid, inactive, or not yet registered.`
+        : `Drug "${input}" not found in RxNorm. Please check the spelling or try a different name.`;
+      const error: any = new Error(errorMsg);
+      error.code = "RXCUI_NOT_FOUND";
+      error.input = input;
+      error.isNdc = isNdc;
+      throw error;
     }
 
     // Get drug details (SCD/SBD)
@@ -140,9 +147,19 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
     console.log(`[RxNorm] Completed in ${Date.now() - startTime}ms`);
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("[RxNorm] Error:", error);
-    throw new Error(`RxNorm lookup failed: ${error}`);
+    
+    // Re-throw RXCUI_NOT_FOUND errors as-is with their detailed messages
+    if (error.code === "RXCUI_NOT_FOUND") {
+      throw error;
+    }
+    
+    // For other errors, wrap with generic message
+    const wrappedError: any = new Error(`RxNorm API error: Unable to process "${input}". Please try again or check your input.`);
+    wrappedError.code = "RXNORM_API_ERROR";
+    wrappedError.originalError = error;
+    throw wrappedError;
   }
 }
 

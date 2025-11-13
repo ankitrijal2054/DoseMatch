@@ -4,7 +4,60 @@ import { parseSig } from "./sig";
 import { computeTotalUnits } from "./engines/quantity";
 import { recommendPacks } from "./engines/pack";
 import { generateWarnings } from "./engines/warnings";
-import type { DrugInput, ResultPayload } from "./types";
+import type { DrugInput, ResultPayload, DirectNdcCheck } from "./types";
+import axios from "axios";
+import { config } from "./config";
+
+/**
+ * Detects if the input string is an NDC code
+ * NDC format: 10-11 digits, optionally with hyphens (XXXXX-XXXX-XX or XXXXX-XXX-XX)
+ */
+function isNdcFormat(input: string): boolean {
+  const cleaned = input.replace(/[-\s]/g, "");
+  return /^\d{10,11}$/.test(cleaned);
+}
+
+/**
+ * Checks the status of a specific NDC using RxNorm API
+ */
+async function checkNdcStatus(ndc: string): Promise<DirectNdcCheck> {
+  try {
+    // Format NDC for RxNorm (add hyphens if needed)
+    const clean = ndc.replace(/[-\s]/g, "");
+    let formattedNdc = ndc;
+    
+    if (clean.length === 11) {
+      formattedNdc = `${clean.substring(0, 5)}-${clean.substring(5, 9)}-${clean.substring(9, 11)}`;
+    } else if (clean.length === 10) {
+      formattedNdc = `${clean.substring(0, 5)}-${clean.substring(5, 8)}-${clean.substring(8, 10)}`;
+    }
+
+    console.log(`[Controller] Checking status of directly provided NDC: ${formattedNdc}`);
+    
+    const response = await axios.get(
+      `${config.rxnorm.baseUrl}/ndcstatus.json`,
+      {
+        params: { ndc: formattedNdc },
+        timeout: 3000,
+      }
+    );
+
+    const status = response.data.ndcStatus?.status;
+    
+    return {
+      ndc: formattedNdc,
+      status: status || "UNKNOWN",
+      isInactive: status === "INACTIVE" || status === "OBSOLETE" || status === "DEPRECATED",
+    };
+  } catch (error) {
+    console.warn(`[Controller] Failed to check NDC status:`, error);
+    return {
+      ndc,
+      status: "UNKNOWN",
+      isInactive: false,
+    };
+  }
+}
 
 /**
  * Main orchestration function that processes a drug recommendation request
@@ -31,6 +84,14 @@ export async function processRecommendation(
   };
 
   try {
+    // Step 0: Check if user provided an NDC directly
+    let directNdcCheck: DirectNdcCheck | undefined;
+    if (input.drugQuery && isNdcFormat(input.drugQuery)) {
+      console.log("[Controller] Step 0: User provided NDC directly, checking status...");
+      directNdcCheck = await checkNdcStatus(input.drugQuery);
+      console.log(`[Controller] Direct NDC check result:`, directNdcCheck);
+    }
+
     // Step 1: Parse SIG (prescription instructions)
     console.log("[Controller] Step 1: Parsing SIG...");
     const sigStart = Date.now();
@@ -108,12 +169,32 @@ export async function processRecommendation(
       },
       recommendation,
       warnings,
+      directNdcCheck,
       performanceMetrics: metrics,
     };
   } catch (error: any) {
     console.error("[Controller] ❌ Error:", error);
 
-    // Return structured error
+    // Handle specific error types with user-friendly messages
+    if (error.code === "RXCUI_NOT_FOUND") {
+      throw {
+        code: "RXCUI_NOT_FOUND",
+        message: error.message,
+        isNdc: error.isNdc,
+        input: error.input,
+        userFriendly: true,
+      };
+    }
+
+    if (error.code === "RXNORM_API_ERROR") {
+      throw {
+        code: "RXNORM_API_ERROR",
+        message: error.message,
+        userFriendly: true,
+      };
+    }
+
+    // Return structured error for generic cases
     throw {
       code: "PROCESSING_ERROR",
       message: error.message || "Failed to process recommendation",
