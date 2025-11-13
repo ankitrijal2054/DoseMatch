@@ -34,16 +34,16 @@
 
 	const presets = [
 		{
-			name: 'Atorvastatin',
-			drugQuery: 'atorvastatin 40mg',
+			name: 'Tablets (Lisinopril)',
+			drugQuery: 'lisinopril 10mg tablet',
 			sigText: 'Take 1 tablet by mouth once daily',
 			daysSupply: 30
 		},
 		{
-			name: 'Metformin',
-			drugQuery: 'metformin 500mg',
-			sigText: 'Take 1 tablet by mouth twice daily',
-			daysSupply: 30
+			name: 'Liquid (Amoxicillin)',
+			drugQuery: 'amoxicillin 250mg/5ml suspension',
+			sigText: 'Take 5 mL by mouth three times daily',
+			daysSupply: 10
 		},
 		{
 			name: 'Ibuprofen',
@@ -225,7 +225,7 @@
 		return {
 			prescription: {
 				drug: {
-					name: result.rxnorm.synonyms?.[0] || 'Unknown',
+					name: result.rxnorm.name || result.rxnorm.synonyms?.[0] || 'Unknown',
 					strength: result.rxnorm.strength,
 					doseForm: result.rxnorm.doseForm
 				},
@@ -449,7 +449,7 @@ Take 1 tablet twice daily with meals"
 							<div>
 								<h2 class="text-2xl sm:text-3xl font-bold text-fh-text900 break-words">{formatNdc(recommendedOption.ndc)}</h2>
 								<p class="text-sm text-fh-text600 mt-1">
-									{result.rxnorm.synonyms?.[0] || 'Unnamed product'}
+									{result.rxnorm.name || result.rxnorm.synonyms?.[0] || 'Unnamed product'}
 									{#if result.rxnorm.doseForm}
 										<span class="text-fh-text900"> • {result.rxnorm.doseForm}</span>
 									{/if}

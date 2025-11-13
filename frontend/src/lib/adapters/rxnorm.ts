@@ -138,6 +138,7 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
 
     const result: RxNormResult = {
       rxcui,
+      name: drugName || undefined,
       doseForm,
       strength,
       synonyms,

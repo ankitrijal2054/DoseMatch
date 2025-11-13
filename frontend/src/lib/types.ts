@@ -19,6 +19,7 @@ export interface NormalizedSig {
 
 export interface RxNormResult {
   rxcui: string;
+  name?: string; // Primary drug name from RxNorm properties
   rxcuiCandidates?: string[]; // Fallback RxCUIss to try if primary doesn't work
   doseForm?: string;
   strength?: string;
