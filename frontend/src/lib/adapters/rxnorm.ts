@@ -104,11 +104,17 @@ export async function normalizeDrug(input: string): Promise<RxNormResult> {
       })
     );
 
-    const props = detailsResponse.data.propConceptGroup?.propConcept || [];
-    const doseForm = props.find((p: any) => p.propName === "DF")?.propValue;
-    const strength = props.find(
-      (p: any) => p.propName === "STRENGTH"
-    )?.propValue;
+    // Extract dose form and strength from the drug name
+    // Example: "amlodipine 5 MG Oral Tablet" -> doseForm = "Oral Tablet"
+    const drugName = detailsResponse.data.properties?.name || "";
+    
+    // Extract dose form (last 1-2 words, common patterns: "Oral Tablet", "Injectable Solution", "Topical Cream")
+    const doseFormMatch = drugName.match(/\b(Oral|Injectable|Topical|Inhalation|Nasal|Ophthalmic|Otic|Rectal|Sublingual|Transdermal|Vaginal|Buccal)\s+(Tablet|Capsule|Solution|Suspension|Cream|Ointment|Gel|Lotion|Powder|Spray|Patch|Film|Pellet|Suppository|Drops|Inhaler|Aerosol|Emulsion)\b/i);
+    const doseForm = doseFormMatch ? doseFormMatch[0] : null;
+    
+    // Extract strength (numbers followed by unit)
+    const strengthMatch = drugName.match(/\d+(\.\d+)?\s*(MG|G|ML|MCG|MEQ|UNIT|%)/i);
+    const strength = strengthMatch ? strengthMatch[0] : null;
 
     // Get synonyms
     const synonymsResponse = await retryRequest(() =>

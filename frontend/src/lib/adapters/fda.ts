@@ -101,27 +101,28 @@ export async function ndcsByRxCui(
       }
     }
 
-    const records: NdcRecord[] = [];
-
+    // Step 1: Collect all NDC package info first (no API calls yet)
+    interface PendingNdc {
+      ndc11: string;
+      packageSize: number;
+      unit: string;
+      labeler?: string;
+      productName?: string;
+    }
+    
+    const pendingNdcs: PendingNdc[] = [];
+    
     for (const item of results) {
       const packaging = item.packaging || [];
-      console.log(
-        `[FDA] Processing item: ${
-          item.brand_name || item.generic_name
-        }, packaging count: ${packaging.length}`
-      );
-
+      
       for (const pkg of packaging) {
         const ndc11 = pkg.package_ndc?.replace(/-/g, "");
-        // Accept both 10-digit and 11-digit NDC formats
         if (!ndc11 || (ndc11.length !== 11 && ndc11.length !== 10)) {
           continue;
         }
 
-        // Parse package size (e.g., "100 TABLET" -> 100, EA)
         const description = pkg.description?.toUpperCase() || "";
         const sizeMatch = description.match(/^(\d+\.?\d*)\s+([A-Z]+)/);
-
         if (!sizeMatch) {
           continue;
         }
@@ -130,20 +131,92 @@ export async function ndcsByRxCui(
         const unitRaw = sizeMatch[2];
         const unit = normalizeUnit(unitRaw);
 
-        // Determine status
-        const status =
-          item.marketing_status === "active" ? "ACTIVE" : "INACTIVE";
-
-        records.push({
+        pendingNdcs.push({
           ndc11,
           packageSize,
           unit,
-          status: status as any,
           labeler: item.labeler_name,
           productName: item.brand_name || item.generic_name,
         });
       }
     }
+
+    console.log(
+      `[FDA] Collected ${pendingNdcs.length} NDC packages, checking statuses in parallel...`
+    );
+
+    // Step 2: Limit to first 40 NDCs to prevent excessive API calls
+    // (pack selection will only use ~20 anyway)
+    const ndcsToCheck = pendingNdcs.slice(0, 40);
+    if (pendingNdcs.length > 40) {
+      console.log(
+        `[FDA] Limiting status checks to first 40 NDCs (had ${pendingNdcs.length})`
+      );
+    }
+
+    // Step 3: Check all NDC statuses in PARALLEL with Promise.all()
+    const statusCheckStart = Date.now();
+    
+    const statusChecks = ndcsToCheck.map(async (ndc) => {
+      try {
+        // Format NDC for RxNorm
+        let formattedNdc = ndc.ndc11;
+        if (ndc.ndc11.length === 11) {
+          formattedNdc = `${ndc.ndc11.substring(0, 5)}-${ndc.ndc11.substring(
+            5,
+            9
+          )}-${ndc.ndc11.substring(9, 11)}`;
+        } else if (ndc.ndc11.length === 10) {
+          formattedNdc = `${ndc.ndc11.substring(0, 5)}-${ndc.ndc11.substring(
+            5,
+            8
+          )}-${ndc.ndc11.substring(8, 10)}`;
+        }
+
+        const statusResponse = await axios.get(
+          `${config.rxnorm.baseUrl}/ndcstatus.json`,
+          {
+            params: { ndc: formattedNdc },
+            timeout: 2000, // Reduced from 3000ms
+          }
+        );
+
+        const ndcStatus = statusResponse.data.ndcStatus?.status;
+        
+        if (ndcStatus === "ACTIVE") {
+          return { ...ndc, status: "ACTIVE" as const };
+        } else if (ndcStatus) {
+          // Inactive - return null to filter out
+          console.log(`[FDA] NDC ${ndc.ndc11} is ${ndcStatus} - skipping`);
+          return null;
+        } else {
+          return { ...ndc, status: "UNKNOWN" as const };
+        }
+      } catch (err) {
+        // If status check fails, mark as UNKNOWN and include it
+        console.warn(`[FDA] Status check failed for NDC ${ndc.ndc11}, marking as UNKNOWN`);
+        return { ...ndc, status: "UNKNOWN" as const };
+      }
+    });
+
+    // Wait for all status checks to complete in parallel
+    const checkedNdcs = await Promise.all(statusChecks);
+    
+    console.log(
+      `[FDA] Status checks completed in ${Date.now() - statusCheckStart}ms`
+    );
+
+    // Step 4: Filter out nulls (inactive NDCs) and build final records
+    const records: NdcRecord[] = checkedNdcs
+      .filter((ndc): ndc is NonNullable<typeof ndc> => ndc !== null)
+      .map((ndc) => ({
+        ndc11: ndc.ndc11,
+        packageSize: ndc.packageSize,
+        unit: ndc.unit,
+        status: ndc.status,
+        labeler: ndc.labeler,
+        productName: ndc.productName,
+      }));
 
     // Sort: ACTIVE first, then by package size ascending
     records.sort((a, b) => {

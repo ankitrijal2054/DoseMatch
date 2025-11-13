@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { httpsCallable } from 'firebase/functions';
 	import { getFirebaseFunctions } from '$lib/firebase';
+	import { cache } from '$lib/cache';
 
 	let drugQuery = '';
 	let sigText = '';
@@ -16,6 +17,20 @@
 	let explanation: string | null = null;
 	let explainerLoading = false;
 	let explainerError: string | null = null;
+	let cacheCleared = false;
+
+	/**
+	 * Format NDC with proper hyphens: 11-digit → XXXXX-XXXX-XX, 10-digit → XXXXX-XXX-XX
+	 */
+	function formatNdc(ndc: string): string {
+		const clean = ndc.replace(/-/g, '');
+		if (clean.length === 11) {
+			return `${clean.substring(0, 5)}-${clean.substring(5, 9)}-${clean.substring(9, 11)}`;
+		} else if (clean.length === 10) {
+			return `${clean.substring(0, 5)}-${clean.substring(5, 8)}-${clean.substring(8, 10)}`;
+		}
+		return ndc; // Return as-is if unexpected format
+	}
 
 	const presets = [
 		{
@@ -155,6 +170,15 @@
 		navigator.clipboard.writeText(value);
 	}
 
+	function clearAllCache() {
+		cache.clear();
+		cacheCleared = true;
+		setTimeout(() => {
+			cacheCleared = false;
+		}, 3000);
+		console.log('[Cache] All cache cleared');
+	}
+
 	onMount(() => {
 		document.querySelector<HTMLInputElement>('#drugQuery')?.focus();
 	});
@@ -170,6 +194,16 @@
 
 	$: recommendedOption = result ? result.recommendation.recommended : null;
 	$: alternativeOptions = result ? result.recommendation.alternatives : [];
+	
+	// Consolidate packs by NDC (combine duplicate NDCs into single line with total count)
+	$: consolidatedPacks = recommendedOption ? 
+		Object.entries(
+			recommendedOption.packsUsed.reduce((acc, pack) => {
+				acc[pack.ndc] = (acc[pack.ndc] || 0) + pack.count;
+				return acc;
+			}, {} as Record<string, number>)
+		).map(([ndc, count]) => ({ ndc, count }))
+		: [];
 
 	// Generate simplified JSON for pharmacy API consumption
 	function getSimplifiedJson() {
@@ -278,14 +312,6 @@ Take 1 tablet twice daily with meals"
 									required
 								/>
 						</div>
-
-						<div class="space-y-2">
-							<p class="text-xs sm:text-sm font-semibold text-fh-text900">Need help?</p>
-							<div class="rounded-fhsm border border-fh-border bg-fh-panel1 p-2 sm:p-3 text-xs text-fh-text600 space-y-1 sm:space-y-2">
-								<p><strong class="text-fh-text900">SIG tips:</strong> Include PRN instructions, numeric ranges, and formulations.</p>
-								<p>Days supply drives quantity calculations—enter full therapy duration.</p>
-							</div>
-						</div>
 					</div>
 					</div>
 
@@ -303,6 +329,18 @@ Take 1 tablet twice daily with meals"
 							<span class="sm:hidden">Loading…</span>
 						{:else}
 							Calculate recommendation
+						{/if}
+					</button>
+					
+					<button
+						type="button"
+						on:click={clearAllCache}
+						class="w-full px-3 py-2 text-xs text-fh-text600 hover:text-fh-blue border border-fh-border rounded-fhsm hover:bg-fh-panel1 transition"
+					>
+						{#if cacheCleared}
+							✓ Cache Cleared
+						{:else}
+							Clear Cache (if seeing inactive NDCs)
 						{/if}
 					</button>
 				</form>
@@ -359,75 +397,74 @@ Take 1 tablet twice daily with meals"
 			{#if result}
 				<section class="bg-white/50 backdrop-blur-md rounded-fhlg border border-fh-border/30 shadow-fh-lg p-4 sm:p-6 space-y-4 sm:space-y-6 animate-fade-up">
 					{#if recommendedOption}
-						<div class="flex flex-col gap-1 sm:gap-2 min-w-0">
-							<div class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-green-700">
+						<div class="flex flex-col gap-2 min-w-0">
+							<div class="inline-flex items-center gap-2 text-sm font-semibold text-green-700">
 								<span class="text-lg flex-shrink-0">✓</span>
-								<span class="truncate">Recommendation ready in {result.performanceMetrics?.totalMs ?? 0}ms</span>
+								<span>Recommendation Ready</span>
 							</div>
-							<h2 class="text-xl sm:text-2xl font-semibold text-fh-text900 break-words">{recommendedOption.ndc}</h2>
-							<p class="text-xs sm:text-sm text-fh-text600 truncate">
-								{result.rxnorm.synonyms?.[0] || 'Unnamed product'} • {result.rxnorm.doseForm ?? 'Unknown dose form'}
-							</p>
+							<div>
+								<h2 class="text-2xl sm:text-3xl font-bold text-fh-text900 break-words">{formatNdc(recommendedOption.ndc)}</h2>
+								<p class="text-sm text-fh-text600 mt-1">
+									{result.rxnorm.synonyms?.[0] || 'Unnamed product'}
+									{#if result.rxnorm.doseForm}
+										<span class="text-fh-text900"> • {result.rxnorm.doseForm}</span>
+									{/if}
+									{#if result.rxnorm.strength}
+										<span class="text-fh-text900"> • {result.rxnorm.strength}</span>
+									{/if}
+								</p>
+							</div>
 						</div>
 
 					{#if parsedSig}
-						<div class="space-y-2">
-							<h3 class="text-xs sm:text-sm font-semibold text-fh-text900 uppercase tracking-wide">Parsed SIG</h3>
-							<div class="flex flex-wrap gap-1 sm:gap-2 text-xs">
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-fh-panel2 text-fh-text900 border border-fh-border">
-									<strong>Dose:</strong> {parsedSig.amountPerDose} {parsedSig.unit}
-								</span>
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-fh-panel2 text-fh-text900 border border-fh-border">
-									<strong>Freq:</strong> {parsedSig.frequencyPerDay}×/d
-								</span>
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-fh-panel2 text-fh-text900 border border-fh-border">
-									<strong>Days:</strong> {parsedSig.daysSupply}
-								</span>
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-fh-panel2 text-fh-blue border border-fh-border">
-									<strong>Conf:</strong> {Math.round(parsedSig.confidence * 100)}%
-								</span>
-								<span class={`px-2 sm:px-3 py-1 rounded-fhsm border text-xs ${parsedSig.parsedBy === 'rules' ? 'bg-green-100 text-green-900 border-green-200' : 'bg-blue-100 text-blue-900 border-blue-200'}`}>
-									{parsedSig.parsedBy === 'rules' ? 'Rules' : 'AI'}
-								</span>
+						<div class="space-y-3">
+							<h3 class="text-sm font-semibold text-fh-text900">Dosing Summary</h3>
+							<div class="grid grid-cols-3 gap-3 text-sm">
+								<div class="rounded-fhmd bg-fh-panel2 border border-fh-border p-3">
+									<div class="text-xs text-fh-text600">Dose</div>
+									<div class="font-semibold text-fh-text900 mt-1">{parsedSig.amountPerDose} {parsedSig.unit}</div>
+								</div>
+								<div class="rounded-fhmd bg-fh-panel2 border border-fh-border p-3">
+									<div class="text-xs text-fh-text600">Frequency</div>
+									<div class="font-semibold text-fh-text900 mt-1">{parsedSig.frequencyPerDay}× daily</div>
+								</div>
+								<div class="rounded-fhmd bg-fh-panel2 border border-fh-border p-3">
+									<div class="text-xs text-fh-text600">Days Supply</div>
+									<div class="font-semibold text-fh-text900 mt-1">{parsedSig.daysSupply} days</div>
+								</div>
 							</div>
-							{#if parsedSig.rationale}
-								<p class="text-xs text-fh-text600 italic line-clamp-2">{parsedSig.rationale}</p>
-							{/if}
 						</div>
 					{/if}
 
-					<div class="space-y-2 sm:space-y-3">
-						<h3 class="text-xs sm:text-sm font-semibold text-fh-text900 uppercase tracking-wide">Recommended package</h3>
-						<div class="rounded-fhmd border border-fh-border bg-fh-panel1 p-3 sm:p-4 space-y-2 sm:space-y-3">
-							<div class="flex flex-wrap items-center gap-1 sm:gap-2 text-xs font-semibold">
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-white border border-fh-border text-fh-text900 text-xs">
+					<div class="space-y-3">
+						<h3 class="text-sm font-semibold text-fh-text900">Recommended Package</h3>
+						<div class="rounded-fhlg border-2 border-green-500 bg-green-50 p-4 space-y-3">
+							<div class="flex flex-wrap items-center gap-2">
+								<span class="px-3 py-1.5 rounded-fhmd bg-white text-fh-text900 font-semibold text-sm border border-green-300">
 									{recommendedOption.packageSize} {recommendedOption.unit}
 								</span>
-								<span class={`px-2 sm:px-3 py-1 rounded-fhsm text-xs ${statusChip(recommendedOption.status)}`}>
+								<span class={`px-3 py-1.5 rounded-fhmd font-semibold text-sm ${statusChip(recommendedOption.status)}`}>
 									{recommendedOption.status}
-								</span>
-								<span class="px-2 sm:px-3 py-1 rounded-fhsm bg-white border border-fh-border text-fh-text900 text-xs">
-									{recommendedOption.matchType}
 								</span>
 								{#if recommendedOption.badges?.length}
 									{#each recommendedOption.badges as badge}
-										<span class="px-2 py-1 rounded-fhsm bg-white border border-fh-border text-fh-text600 text-xs">{badge}</span>
+										<span class="px-3 py-1.5 rounded-fhmd bg-white border border-green-300 text-fh-text900 text-sm font-medium">{badge}</span>
 									{/each}
 								{/if}
 							</div>
 
-							<div class="space-y-1 sm:space-y-2 text-xs sm:text-sm text-fh-text600">
-								<p class="font-semibold text-fh-text900">Dispensing plan</p>
-								{#each recommendedOption.packsUsed as pack}
-									<p>{pack.count}× pack of NDC {pack.ndc}</p>
-								{/each}
-								<p class="font-semibold text-fh-blue">
+							<div class="space-y-2 text-sm">
+							<div class="font-semibold text-fh-text900 text-base">Dispense:</div>
+							{#each consolidatedPacks as pack}
+								<div class="text-fh-text900">{pack.count}× pack of {formatNdc(pack.ndc)}</div>
+							{/each}
+								<div class="text-lg font-bold text-green-800 mt-2">
 									Total: {recommendedOption.totalDispensed} {recommendedOption.unit}
-								</p>
+								</div>
 							</div>
 
-							<div class="rounded-fhsm border border-fh-border bg-white p-2 sm:p-3 text-xs sm:text-sm text-fh-text600">
-								<strong class="text-fh-text900">Why:</strong> {recommendedOption.why}
+							<div class="rounded-fhmd bg-white p-3 text-sm text-fh-text600 border border-green-300">
+								{recommendedOption.why}
 							</div>
 						</div>
 					</div>
@@ -446,14 +483,14 @@ Take 1 tablet twice daily with meals"
 						</div>
 					{/if}
 
-				<div class="flex flex-wrap items-center gap-2">
-					<button
-						type="button"
-						on:click={() => recommendedOption && copyToClipboard(recommendedOption.ndc)}
-						class="px-3 sm:px-4 py-1 sm:py-2 bg-fh-blue text-white rounded-fhsm text-xs sm:text-sm font-semibold hover:bg-fh-purple transition"
-					>
-						Copy NDC
-					</button>
+			<div class="flex flex-wrap items-center gap-2">
+				<button
+					type="button"
+					on:click={() => recommendedOption && copyToClipboard(formatNdc(recommendedOption.ndc))}
+					class="px-3 sm:px-4 py-1 sm:py-2 bg-fh-blue text-white rounded-fhsm text-xs sm:text-sm font-semibold hover:bg-fh-purple transition"
+				>
+					Copy NDC
+				</button>
 					<button
 						type="button"
 						on:click={() => (showJsonModal = !showJsonModal)}
@@ -503,19 +540,6 @@ Take 1 tablet twice daily with meals"
 						</div>
 					</div>
 				{/if}
-
-				{#if result.performanceMetrics}
-						<div class="space-y-2 text-xs text-fh-text600">
-							<h3 class="text-xs sm:text-sm font-semibold text-fh-text900 uppercase tracking-wide">Performance</h3>
-							<div class="grid grid-cols-2 gap-2 text-xs">
-								<p>Total: {result.performanceMetrics.totalMs}ms</p>
-								<p>RxNorm: {result.performanceMetrics.rxnormMs}ms</p>
-								<p>FDA: {result.performanceMetrics.fdaMs}ms</p>
-								<p>SIG: {result.performanceMetrics.sigParsingMs}ms</p>
-								<p>Cache: {result.performanceMetrics.cacheHits}</p>
-							</div>
-						</div>
-					{/if}
 				{/if}
 				</section>
 			{:else}
@@ -554,19 +578,19 @@ Take 1 tablet twice daily with meals"
 			<div class="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
 				{#each alternativeOptions as alt}
 					<div class="rounded-fhlg border border-fh-border/30 bg-gradient-to-br from-fh-blue-light/20 to-fh-purple-light/20 backdrop-blur-sm p-3 sm:p-5 space-y-2 sm:space-y-3 card-hover">
-						<div class="flex items-start justify-between gap-2 min-w-0">
-							<div class="min-w-0">
-								<p class="font-semibold text-fh-text900 text-sm break-words">{alt.ndc}</p>
-								<p class="text-xs text-fh-text600">{alt.packageSize} {alt.unit}</p>
-							</div>
-							<button
-								type="button"
-								on:click={() => copyToClipboard(alt.ndc)}
-								class="text-xs font-semibold text-fh-blue hover:text-fh-purple flex-shrink-0"
-							>
-								Copy
-							</button>
-						</div>
+					<div class="flex items-start justify-between gap-2 min-w-0">
+					<div class="min-w-0">
+						<p class="font-semibold text-fh-text900 text-sm break-words">{formatNdc(alt.ndc)}</p>
+						<p class="text-xs text-fh-text600">{alt.packageSize} {alt.unit}</p>
+					</div>
+						<button
+							type="button"
+							on:click={() => copyToClipboard(formatNdc(alt.ndc))}
+							class="text-xs font-semibold text-fh-blue hover:text-fh-purple flex-shrink-0"
+						>
+							Copy
+						</button>
+					</div>
 						{#if alt.badges?.length}
 							<div class="flex flex-wrap gap-1 text-xs text-fh-text600">
 								{#each alt.badges as badge}

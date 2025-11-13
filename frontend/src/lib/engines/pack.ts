@@ -32,8 +32,22 @@ function scoreOption(
   // -2 per percentage point of overfill
   score -= option.overfillPercent * 2;
 
-  // Minimize number of packs (single pack preferred)
-  score -= option.packsUsed.length * 10;
+  // Check if all packs use the same NDC (pharmacy workflow preference!)
+  const uniqueNdcs = new Set(option.packsUsed.map((p) => p.ndc));
+  const isSameNdc = uniqueNdcs.size === 1;
+
+  if (isSameNdc && option.packsUsed.length > 1) {
+    // Bonus for same-NDC multi-pack (simpler workflow)
+    // +100 bonus makes it strongly preferred over mixed NDCs
+    score += 100;
+  } else {
+    // Penalize mixed-NDC combinations more heavily
+    // Multiple different NDCs = more complex dispensing
+    score -= option.packsUsed.length * 20;
+  }
+
+  // Minimize total number of packs
+  score -= option.packsUsed.length * 5;
 
   // Bonus for single pack solutions
   if (option.packsUsed.length === 1) score += 50;
@@ -76,83 +90,63 @@ function findExactMatch(
 }
 
 /**
- * Find best multi-pack combination (2-3 packs) within overfill constraints
- * 🔥 OPTIMIZED: 4 key optimizations reduce O(n²×m²) to O(400)
+ * Find best same-NDC multi-pack combination (2-3 packs of the SAME NDC)
+ * NEVER mixes different NDCs - always uses same NDC for all packs
  */
 function findMultiPackCombination(
   targetUnits: number,
   ndcs: NdcRecord[],
   maxPacks: number
 ): RecommendationOption | null {
-  // 🔥 OPTIMIZATION 1: Limit search space to first 20 active NDCs
-  const activeNdcs = ndcs.filter((n) => n.status === "ACTIVE").slice(0, 20);
+  const activeNdcs = ndcs.filter((n) => n.status === "ACTIVE");
 
   if (activeNdcs.length === 0) return null;
 
   const candidates: RecommendationOption[] = [];
-  const maxOverfillRatio = 1.15; // 🔥 OPTIMIZATION 2: Cap at 15% overfill
-  let bestOverfill = Infinity;
+  const maxOverfillRatio = 1.20; // Allow up to 20% overfill for same-NDC simplicity
 
-  // Two pack combinations (most common scenario)
-  for (let i = 0; i < activeNdcs.length && candidates.length < 10; i++) {
-    for (let j = i; j < activeNdcs.length; j++) {
-      const ndc1 = activeNdcs[i];
-      const ndc2 = activeNdcs[j];
+  // Try each NDC with different pack counts (2 or 3 packs of SAME NDC only)
+  for (const ndc of activeNdcs) {
+    for (let packCount = 2; packCount <= maxPacks; packCount++) {
+      const total = ndc.packageSize * packCount;
 
-      // 🔥 OPTIMIZATION 3: Smarter count limits
-      const maxCount1 = Math.min(
-        maxPacks,
-        Math.ceil(targetUnits / ndc1.packageSize) + 1
-      );
+      // Skip if underfill
+      if (total < targetUnits) {
+        continue;
+      }
 
-      for (let count1 = 1; count1 <= maxCount1; count1++) {
-        for (let count2 = 0; count2 <= maxPacks - count1; count2++) {
-          const total = ndc1.packageSize * count1 + ndc2.packageSize * count2;
+      // Skip if excessive overfill
+      if (total > targetUnits * maxOverfillRatio) {
+        break; // No point trying higher counts
+      }
 
-          // Skip if underfill or excessive overfill
-          if (total < targetUnits || total > targetUnits * maxOverfillRatio) {
-            continue;
-          }
+      const overfill = ((total - targetUnits) / targetUnits) * 100;
 
-          const overfill = ((total - targetUnits) / targetUnits) * 100;
+      candidates.push({
+        ndc: ndc.ndc11,
+        packageSize: ndc.packageSize,
+        unit: ndc.unit,
+        status: "ACTIVE",
+        packsUsed: [{ ndc: ndc.ndc11, count: packCount }],
+        matchType: "MULTI_PACK",
+        overfillPercent: overfill,
+        underfillPercent: 0,
+        totalDispensed: total,
+        badges: packCount > 1 ? [`${packCount} Packs`] : ["Multi-Pack"],
+        why: `${packCount}× packs of ${ndc.packageSize} ${ndc.unit} = ${total} ${ndc.unit}`,
+        score: 0,
+      });
 
-          // 🔥 OPTIMIZATION 4: Early termination for near-perfect matches
-          if (overfill < 2 && overfill < bestOverfill) {
-            bestOverfill = overfill;
-          }
-
-          const packs: PackComposition[] = [{ ndc: ndc1.ndc11, count: count1 }];
-          if (count2 > 0) packs.push({ ndc: ndc2.ndc11, count: count2 });
-
-          candidates.push({
-            ndc: ndc1.ndc11,
-            packageSize: ndc1.packageSize,
-            unit: ndc1.unit,
-            status: "ACTIVE",
-            packsUsed: packs,
-            matchType: "MULTI_PACK",
-            overfillPercent: overfill,
-            underfillPercent: 0,
-            totalDispensed: total,
-            badges: ["Multi-Pack"],
-            why: `Combination: ${packs
-              .map((p) => `${p.count}×${p.ndc}`)
-              .join(" + ")} = ${total} ${ndc1.unit}`,
-            score: 0,
-          });
-
-          // Exit early if we found excellent match
-          if (overfill < 2) {
-            break;
-          }
-        }
+      // If we found a near-perfect match (<5% overfill), we can stop here
+      if (overfill < 5) {
+        break;
       }
     }
   }
 
   if (candidates.length === 0) return null;
 
-  // Score and pick best
+  // Score and pick best (same-NDC bonus is already in scoreOption)
   candidates.forEach((c) => (c.score = scoreOption(c, targetUnits)));
   candidates.sort((a, b) => b.score - a.score);
 
