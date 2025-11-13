@@ -28,8 +28,11 @@ Focus on:
 
 Be professional but conversational. Do not include any patient identifiable information.`;
 
-export const explainRecommendation = functions.https.onCall(
-  async (data: ExplainRequest): Promise<string> => {
+export const explainRecommendation = functions
+  .runWith({
+    secrets: ["OPENAI_API_KEY"],
+  })
+  .https.onCall(async (data: ExplainRequest): Promise<string> => {
     const { drugQuery, sigText, daysSupply, recommendation } = data;
 
     console.log(
@@ -90,5 +93,4 @@ Packs Used: ${recommendation.packsUsed
       console.log("[Explainer] Using fallback:", fallback);
       return fallback;
     }
-  }
-);
+  });

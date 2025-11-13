@@ -154,6 +154,9 @@
 
 			result = recommendation;
 			parsedSig = recommendation.normalizedSig;
+			
+			// Automatically get AI explanation
+			await handleExplainRecommendation();
 		} catch (err) {
 			console.error('Recommendation error:', err);
 			
@@ -346,17 +349,6 @@ Take 1 tablet twice daily with meals"
 						{/if}
 					</button>
 					
-					<button
-						type="button"
-						on:click={clearAllCache}
-						class="w-full px-3 py-2 text-xs text-fh-text600 hover:text-fh-blue border border-fh-border rounded-fhsm hover:bg-fh-panel1 transition"
-					>
-						{#if cacheCleared}
-							✓ Cache Cleared
-						{:else}
-							Clear Cache (if seeing inactive NDCs)
-						{/if}
-					</button>
 				</form>
 
 			{#if error}
@@ -542,20 +534,6 @@ Take 1 tablet twice daily with meals"
 					>
 						View JSON
 					</button>
-					<button
-						type="button"
-						on:click={handleExplainRecommendation}
-						disabled={explainerLoading}
-						class="px-3 sm:px-4 py-1 sm:py-2 rounded-fhsm border border-fh-border text-xs sm:text-sm font-semibold text-fh-text600 hover:bg-fh-panel2 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-					>
-						{#if explainerLoading}
-							<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-							</svg>
-						{/if}
-						<span>{showExplainer ? 'Hide AI Explanation' : 'Show AI Explanation'}</span>
-					</button>
 				</div>
 
 				{#if showExplainer}
@@ -563,7 +541,7 @@ Take 1 tablet twice daily with meals"
 						<div class="flex items-start gap-3">
 							<div class="text-2xl flex-shrink-0">🤖</div>
 							<div class="min-w-0 flex-1">
-								<h3 class="font-semibold text-fh-text900 text-sm sm:text-base mb-2">AI Explanation</h3>
+								<h3 class="font-semibold text-fh-text900 text-sm sm:text-base mb-2">Explanation</h3>
 								{#if explainerLoading}
 									<div class="flex items-center gap-2 text-fh-text600 text-xs sm:text-sm">
 										<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -579,6 +557,8 @@ Take 1 tablet twice daily with meals"
 									</div>
 								{:else if explanation}
 									<p class="text-fh-text600 text-xs sm:text-sm leading-relaxed italic">{explanation}</p>
+								{:else}
+									<p class="text-fh-text600 text-xs sm:text-sm italic">Generating AI explanation...</p>
 								{/if}
 							</div>
 						</div>

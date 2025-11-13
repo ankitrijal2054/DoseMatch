@@ -196,7 +196,6 @@
 			<li>Click "Test Adapters" to run both RxNorm and FDA API calls</li>
 			<li>Check browser console for detailed logs</li>
 			<li>Click again to test cache hits (should be much faster)</li>
-			<li>Use "Clear Cache" to reset and test fresh API calls</li>
 		</ol>
 	</div>
 </div>

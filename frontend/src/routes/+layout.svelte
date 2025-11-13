@@ -55,7 +55,7 @@
 			<div class="space-y-3">
 				<p class="font-medium text-fh-text900">© {currentYear} DoseMatch </p>
 				<p>
-					<a href="https://github.com/yourusername/dosematch" class="text-fh-blue hover:text-fh-purple font-semibold hover:underline transition-colors">View on GitHub</a>
+					<a href="https://github.com/ankitrijal2054/dosematch" class="text-fh-blue hover:text-fh-purple font-semibold hover:underline transition-colors">View on GitHub</a>
 				</p>
 			</div>
 		</div>
